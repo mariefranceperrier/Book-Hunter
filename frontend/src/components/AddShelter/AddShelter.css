@@ -1,0 +1,15 @@
+.error {
+  color: red;
+  font-size: 0.875em;
+  margin-top: 0.5em;
+}
+
+input[type="text"], input[type="file"], select, button {
+  display: block;
+  margin-top: 0.5em;
+}
+
+button {
+  margin-top: 1em;
+}
+

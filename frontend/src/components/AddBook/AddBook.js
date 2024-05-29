@@ -26,6 +26,8 @@ const AddBook = () => {
     };
 
     return (
+      <>
+        <h2>Thank you for your donation!</h2>
         <form onSubmit={handleSubmit}>
             <div>
                 <label htmlFor="isbn">ISBN Number:</label>
@@ -54,6 +56,7 @@ const AddBook = () => {
             </div>
             <button type="submit">Add Book</button>
         </form>
+        </>
     );
 };
 
