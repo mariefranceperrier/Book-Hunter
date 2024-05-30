@@ -16,7 +16,7 @@ const Search = () => {
   
     // need to update server-side to include an endpoint '/search' for searching the database.
     axios
-      .post('http://localhost:3000/search', { title, author, genre, city })
+      .post('/api/search', { title, author, genre, city })
       .then((res) => {
         console.log(res)
         if (res.data.found) { 
