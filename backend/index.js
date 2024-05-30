@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const pool = require('./db/db');
 const app = express();
