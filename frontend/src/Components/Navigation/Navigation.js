@@ -5,7 +5,7 @@ import './Navigation.css';
 const Navigation = () => {
   return (
     <main className="nav-bar">
-      <h1>BOOK HUNTER</h1>
+      <h1>📚 BOOK HUNTER 📚</h1>
       <section className="nav-links">
         <div className="nav-item"><Link to="/allshelters">Locate a Shelter</Link></div>
         <div className="nav-item"><Link to="/addshelter">Add a Shelter</Link></div>

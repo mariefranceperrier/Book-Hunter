@@ -1,0 +1,42 @@
+.search {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.search h1 {
+    margin-bottom: 20px;
+    color: olivedrab;
+}
+
+.search h2 {
+    margin-bottom: 30px;
+    color: olivedrab;
+}
+
+.search form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.search input{
+  margin-bottom: 10px;
+}
+
+.search button {
+    width: 50%;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    border-color: grey;
+    padding: 2px;
+    background-color: rgb(186, 186, 97);
+}
+
+.search button:hover {
+    background-color:rgb(154, 154, 81);
+}

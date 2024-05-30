@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Search.css';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Search = () => {
   return (
     <main className="search">
       <h1>CATCH ME IF YOU CAN</h1>
+      <h2>Hunt a book by typing at least one detail below: </h2>
       <form onSubmit={handleSubmit}>
         <input  type="text" name="title"  placeholder="Title" />
         <input  type="text" name="author" placeholder="Author" />
