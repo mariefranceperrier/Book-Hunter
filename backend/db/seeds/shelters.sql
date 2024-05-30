@@ -1,4 +1,28 @@
 INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture)
 VALUES
 (299, 'Ottawa Regional Rd 91', 'Ottawa', '(45.417618, -75.690423)', NULL),
-(390, 'Wellington St', 'Ottawa', '(45.419681, -75.707810)', NULL);
+(390, 'Wellington St', 'Ottawa', '(45.419681, -75.707810)', NULL),
+(112, 'Lisgar St', 'Ottawa', '(45.414213, -75.691292)', NULL),
+(450, 'Rideau St', 'Ottawa', '(45.429051, -75.683213)', NULL),
+(123, 'Albert St', 'Ottawa', '(45.419278, -75.698435)', NULL),
+(78, 'Elgin St', 'Ottawa', '(45.421932, -75.690798)', NULL),
+(300, 'Bank St', 'Ottawa', '(45.413896, -75.690289)', NULL),
+(50, 'Queen St', 'Ottawa', '(45.421532, -75.700152)', NULL),
+(200, 'O Connor St', 'Ottawa', '(45.416947, -75.693188)', NULL),
+(55, 'Laurier Ave W', 'Ottawa', '(45.421079, -75.689988)', NULL),
+(100, 'Somerset St W', 'Ottawa', '(45.415152, -75.693462)', NULL),
+(321, 'Gloucester St', 'Ottawa', '(45.419992, -75.692132)', NULL),
+(10, 'Mackenzie Ave', 'Ottawa', '(45.427648, -75.698113)', NULL),
+(85, 'Bronson Ave', 'Ottawa', '(45.408759, -75.708283)', NULL),
+(175, 'Preston St', 'Ottawa', '(45.402571, -75.715343)', NULL),
+(198, 'Kent St', 'Ottawa', '(45.415672, -75.700032)', NULL),
+(310, 'Lyon St N', 'Ottawa', '(45.416893, -75.705031)', NULL),
+(67, 'Argyle Ave', 'Ottawa', '(45.412383, -75.693792)', NULL),
+(90, 'Cooper St', 'Ottawa', '(45.416234, -75.693453)', NULL),
+(122, 'Slater St', 'Ottawa', '(45.417812, -75.699812)', NULL),
+(215, 'Chapel St', 'Ottawa', '(45.430932, -75.674212)', NULL),
+(80, 'Gladstone Ave', 'Ottawa', '(45.407718, -75.700831)', NULL),
+(60, 'George St', 'Ottawa', '(45.429682, -75.689993)', NULL),
+(240, 'Nicholas St', 'Ottawa', '(45.421752, -75.684032)', NULL),
+(310, 'King Edward Ave', 'Ottawa', '(45.428531, -75.679401)', NULL);
+
