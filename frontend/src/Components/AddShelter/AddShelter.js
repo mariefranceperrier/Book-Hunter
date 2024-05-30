@@ -31,15 +31,15 @@ const AddShelter = () => {
         } else {
             setError('');
             const formData = new FormData();
-            formData.append('civicNumber', civicNumber);
-            formData.append('streetName', streetName);
+            formData.append('civic_number', civicNumber);
+            formData.append('street_name', streetName);
             formData.append('city', city);
             if (picture) {
                 formData.append('picture', picture);
             }
 
             try {
-                const response = await fetch('/api/shelters', {
+                const response = await fetch('http://localhost:5000/api/shelters', {
                     method: 'POST',
                     body: formData,
                 });
