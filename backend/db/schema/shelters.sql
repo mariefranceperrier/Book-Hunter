@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS shelters CASCADE;
 CREATE TABLE shelters (
     id SERIAL PRIMARY KEY,
     civic_number INTEGER NOT NULL,
