@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AddBook.css';
 
 const AddBook = () => {
     const [isbn, setIsbn] = useState('');
     const [condition, setCondition] = useState('New');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const fetchBookDetails = async (isbn) => {
         const apiKey = 'AIzaSyAZaIMpl6QSGkGRMDr1wgG95rnevN0Wovw';
@@ -43,7 +46,10 @@ const AddBook = () => {
                 body: JSON.stringify({ isbn, condition, ...bookDetails }),
             });
             if (response.ok) {
-                console.log('Book added successfully');
+                setSuccess(true);
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
             } else {
                 console.error('Failed to add book');
             }
@@ -81,6 +87,7 @@ const AddBook = () => {
                 </div>
                 <button type="submit">Add Book</button>
             </form>
+            {success && <div className="alert alert-success" role="alert">Book added successfully!</div>}
         </>
     );
 };
