@@ -6,11 +6,21 @@ const AddBook = () => {
     const [condition, setCondition] = useState('New');
     const [error, setError] = useState('');
 
-    const handleIsbnChange = (e) => {
-        const value = e.target.value;
-        if (/^\d*$/.test(value)) {
-            setIsbn(value);
+    const fetchBookDetails = async (isbn) => {
+        const apiKey = 'AIzaSyAZaIMpl6QSGkGRMDr1wgG95rnevN0Wovw';
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${apiKey}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.totalItems > 0) {
+                const book = data.items[0].volumeInfo;
+                return {
+                    title: book.title,
+                    author: book.authors ? book.authors.join(', ') : 'Unknown Author',
+                    genre: book.categories ? book.categories.join(', ') : 'Unknown Genre',
+                };
+            }
         }
+        return null;
     };
 
     const handleSubmit = async (event) => {
@@ -19,13 +29,18 @@ const AddBook = () => {
             setError('ISBN must be either 10 or 13 digits long.');
         } else {
             setError('');
-            // Handle form submission logic
+            const bookDetails = await fetchBookDetails(isbn);
+            if (!bookDetails) {
+                setError('Book details not found. Please check the ISBN.');
+                return;
+            }
+
             const response = await fetch('/api/books', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ isbn, condition }),
+                body: JSON.stringify({ isbn, condition, ...bookDetails }),
             });
             if (response.ok) {
                 console.log('Book added successfully');
@@ -45,7 +60,7 @@ const AddBook = () => {
                         type="text"
                         id="isbn"
                         value={isbn}
-                        onChange={handleIsbnChange}
+                        onChange={(e) => setIsbn(e.target.value)}
                         required
                     />
                     {error && <p className="error">{error}</p>}

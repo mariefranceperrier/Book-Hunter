@@ -27,19 +27,6 @@ const createShelter = async (civicNumber, streetName, city, picture) => {
     }
 };
 
-const createBook = async (isbn, condition) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query(
-            'INSERT INTO books (barcode, condition) VALUES ($1, $2) RETURNING *',
-            [isbn, condition]
-        );
-        return result.rows[0];
-    } finally {
-        client.release();
-    }
-};
-
 app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     try {
         const { civic_number, street_name, city } = req.body;
@@ -52,10 +39,26 @@ app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     }
 });
 
-app.post('/api/books', async (req, res) => {
+const createBook = async (barcode, condition, title, author, genre) => {
+    const client = await pool.connect();
     try {
-        const { isbn, condition } = req.body;
-        const book = await createBook(isbn, condition);
+        const result = await client.query(
+            'INSERT INTO books (barcode, condition, title, author, genre) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [barcode, condition, title, author, genre]
+        );
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error creating book:', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+};
+  
+  app.post('/api/books', async (req, res) => {
+    try {
+        const { isbn: barcode, condition, title, author, genre } = req.body;
+        const book = await createBook(barcode, condition, title, author, genre);
         res.status(201).json(book);
     } catch (error) {
         console.error(error);
