@@ -38,3 +38,8 @@ margin-bottom: 35px;
   background-color: olivedrab;
   padding: 5px;
 }
+
+.header-link {
+  text-decoration: none;
+  color: inherit;
+}
