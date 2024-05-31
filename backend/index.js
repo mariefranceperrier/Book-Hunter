@@ -13,6 +13,8 @@ const upload = multer();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 const createShelter = async (civicNumber, streetName, city, picture) => {
     const client = await pool.connect();
@@ -39,6 +41,19 @@ const createBook = async (isbn, condition) => {
         client.release();
     }
 };
+
+
+app.get('/api/shelters', async (req, res) => {
+  try {
+    const shelters = await pool.query('SELECT * FROM shelters');
+    res.json(shelters.rows);
+  } catch (error) {
+    console.error('Error fetching shelter data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     try {
