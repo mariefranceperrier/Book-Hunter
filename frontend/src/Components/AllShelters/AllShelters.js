@@ -1,25 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
 import './AllShelters.css';
 
-const initialLocations = [
-  { key: 'shelterID1', location: { lat: 45.417618, lng: -75.690423 } },
-  { key: 'shelterID2', location: { lat: 45.419681, lng: -75.707810 } },
-  { key: 'shelterID3', location: { lat: 45.414213, lng: -75.691292 } },
-  { key: 'shelterID4', location: { lat: 45.429051, lng: -75.683213 } },
-  { key: 'shelterID5', location: { lat: 45.419278, lng: -75.698435 } },
-  { key: 'shelterID6', location: { lat: 45.421932, lng: -75.690798 } },
-  { key: 'shelterID7', location: { lat: 45.413896, lng: -75.690289 } },
-  { key: 'shelterID8', location: { lat: 45.421532, lng: -75.700152 } },
-  { key: 'shelterID9', location: { lat: 45.416947, lng: -75.693188 } },
-  { key: 'shelterID10', location: { lat: 45.421079, lng: -75.689988 } },
-  { key: 'shelterID11', location: { lat: 45.415152, lng: -75.689988 } },
-  { key: 'shelterID12', location: { lat: 45.419992, lng: -75.692132 } },
-  { key: 'shelterID13', location: { lat: 45.427648, lng: -75.698113 } },
-  { key: 'shelterID14', location: { lat: 45.408759, lng: -75.708283 } },
-  { key: 'shelterID15', location: { lat: 45.402571, lng: -75.715343 } },
-];
 
 const PoiMarkers = ({ pois }) => {
   const map = useMap();
@@ -57,8 +41,54 @@ PoiMarkers.propTypes = {
 };
 
 const AllShelters = () => {
-  const [locations, setLocations] = useState(initialLocations);
+  const [locations, setLocations] = useState([]);
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get('/api/shelters');
+          console.log('Response data :', response.data);
+
+        const data = response.data.map((shelter, index) => {
+          console.log('Pin coord:', shelter.pin_coord, typeof shelter.pin_coord);
+
+          let coords;
+          if (typeof shelter.pin_coord === 'string') {
+            coords = shelter.pin_coord
+              .replace(/[()]/g, '') // Remove parentheses
+              .split(',') // Split by comma
+              .map(coord => parseFloat(coord.trim())); // Convert to float and trim whitespace
+          } else if (Array.isArray(shelter.pin_coord)) {
+            coords = shelter.pin_coord;
+          } else if (typeof shelter.pin_coord === 'object' && shelter.pin_coord !== null) {
+            coords = [shelter.pin_coord.x, shelter.pin_coord.y];
+          } else {
+            console.error('Unknown format for pin_coord:', shelter.pin_coord);
+            return null;
+          }
+
+          if (coords.length === 2) {
+            return {
+              key: `shelterID${index + 1}`,
+              location: {
+                lat: coords[0],
+                lng: coords[1],
+              },
+            };
+          }
+          return null;
+        }).filter(shelter => shelter !== null);
+
+        console.log('Fetched data:', data);
+        setLocations(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchLocations();
+  }, []);     
+          
+        
   const handleMapClick = useCallback((ev) => {
     if (!ev.latLng) return;
     const newLocation = {
@@ -86,6 +116,3 @@ const AllShelters = () => {
 };
 
 export default AllShelters;
-
-
-

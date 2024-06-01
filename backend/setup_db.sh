@@ -1,5 +1,5 @@
 # Load environment variables from the root .env file
-set -o allexport; . ../.env; set +o allexport
+set -o allexport; . ./.env; set +o allexport
 
 # Run schema files
 PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_DATABASE -f db/schema/shelters.sql
