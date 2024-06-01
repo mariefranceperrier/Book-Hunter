@@ -24,5 +24,20 @@ VALUES
 (80, 'Gladstone Ave', 'Ottawa', '(45.407718, -75.700831)', NULL),
 (60, 'George St', 'Ottawa', '(45.429682, -75.689993)', NULL),
 (240, 'Nicholas St', 'Ottawa', '(45.421752, -75.684032)', NULL),
-(310, 'King Edward Ave', 'Ottawa', '(45.428531, -75.679401)', NULL);
+(310, 'King Edward Ave', 'Ottawa', '(45.428531, -75.679401)', NULL),
 
+(100, 'George St', 'Toronto', '(43.6532, -79.3832)', NULL),
+(200, 'Yonge St', 'Toronto', '(43.6535, -79.3802)', NULL),
+(300, 'Queen St W', 'Toronto', '(43.6509, -79.3905)', NULL),
+
+(400, 'Bloor St W', 'Montreal', '(45.5017, -73.5673)', NULL),
+(500, 'Rue Sainte-Catherine O', 'Montreal', '(45.5046, -73.5733)', NULL),
+(600, 'Rue de la Montagne', 'Montreal', '(45.4973, -73.5741)', NULL),
+
+(700, 'Robson St', 'Vancouver', '(49.2827, -123.1207)', NULL),
+(800, 'Granville St', 'Vancouver', '(49.2827, -123.1207)', NULL),
+(900, 'Main St', 'Vancouver', '(49.2827, -123.1207)', NULL),
+
+(100, 'Whyte Ave NW', 'Alberta', '(53.5229, -113.5158)', NULL),
+(200, 'Jasper Ave', 'Alberta', '(53.5342, -113.5016)', NULL),
+(300, 'Rue 104 St NW', 'Alberta', '(53.5417, -113.4995)', NULL);

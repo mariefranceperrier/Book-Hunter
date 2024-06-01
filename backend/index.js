@@ -31,7 +31,15 @@ const createShelter = async (civicNumber, streetName, city, picture) => {
 
 app.get('/api/shelters', async (req, res) => {
   try {
-    const shelters = await pool.query('SELECT * FROM shelters');
+    const { city } = req.query;
+    let query = 'SELECT * FROM shelters';
+    let values = [];
+    if (city) {
+      query += ' WHERE city = $1';
+      values.push(city);
+    }
+
+    const shelters = await pool.query(query, values);
     res.json(shelters.rows);
   } catch (error) {
     console.error('Error fetching shelter data:', error);
