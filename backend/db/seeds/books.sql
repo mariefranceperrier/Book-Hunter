@@ -94,10 +94,9 @@ VALUES
 (23, 'Ulysses', 'James Joyce', 'Fiction', '9780199535676', 'Rough', TRUE),
 (24, 'The Iliad', 'Homer', 'Epic', '9780140275360', 'New', TRUE),
 (24, 'The Odyssey', 'Homer', 'Epic', '9780140268867', 'Lightly Used', TRUE),
-(24, 'The Trial', 'Franz Kafka', 'Fiction', '9780805209990', 'Well Used', TRUE),
-(24, 'Fahrenheit 451', 'Ray Bradbury', 'Dystopian', '9781451673319', 'Rough', TRUE),
-(25, 'The Stranger', 'Albert Camus', 'Fiction', '9780679720201', 'New', TRUE),
-(25, 'The Metamorphosis', 'Franz Kafka', 'Fiction', '9780486290300', 'Lightly Used', TRUE),
-(25, 'The Old Man and the Sea', 'Ernest Hemingway', 'Fiction', '9780684801223', 'Well Used', TRUE),
-(25, 'The Count of Monte Cristo', 'Alexandre Dumas', 'Adventure', '9780140449266', 'Rough', TRUE);
-
+(25, 'The Trial', 'Franz Kafka', 'Fiction', '9780805209990', 'Well Used', TRUE),
+(25, 'Fahrenheit 451', 'Ray Bradbury', 'Dystopian', '9781451673319', 'Rough', TRUE),
+(26, 'The Stranger', 'Albert Camus', 'Fiction', '9780679720201', 'New', TRUE),
+(27, 'The Metamorphosis', 'Franz Kafka', 'Fiction', '9780486290300', 'Lightly Used', TRUE),
+(28, 'The Old Man and the Sea', 'Ernest Hemingway', 'Fiction', '9780684801223', 'Well Used', TRUE),
+(29, 'The Count of Monte Cristo', 'Alexandre Dumas', 'Adventure', '9780140449266', 'Rough', TRUE);

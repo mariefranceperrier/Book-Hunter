@@ -42,16 +42,14 @@ PoiMarkers.propTypes = {
 
 const AllShelters = () => {
   const [locations, setLocations] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+  const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
 
-  useEffect(() => {
-    const fetchLocations = async () => {
+  const fetchLocations = useCallback(async () => {
       try {
-        const response = await axios.get('/api/shelters');
-          console.log('Response data :', response.data);
-
+        const response = await axios.get(`/api/shelters?city=${selectedCity}`);
+        console.log('Response data:', response.data);
         const data = response.data.map((shelter, index) => {
-          console.log('Pin coord:', shelter.pin_coord, typeof shelter.pin_coord);
-
           let coords;
           if (typeof shelter.pin_coord === 'string') {
             coords = shelter.pin_coord
@@ -78,17 +76,23 @@ const AllShelters = () => {
           }
           return null;
         }).filter(shelter => shelter !== null);
-
         console.log('Fetched data:', data);
         setLocations(data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    };
+  }, [selectedCity]);     
+    
+  
+  useEffect(() => {
     fetchLocations();
-  }, []);     
-          
-        
+  }, [fetchLocations]);
+  
+
+  const handleCityChange = (e) => {
+    setSelectedCity(e.target.value);
+  };
+
   const handleMapClick = useCallback((ev) => {
     if (!ev.latLng) return;
     const newLocation = {
@@ -98,13 +102,24 @@ const AllShelters = () => {
     setLocations([...locations, newLocation]);
   }, [locations]);
 
+
+
   return (
     <div className="all-shelters-container">
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Enter city name..."
+          value={selectedCity}
+          onChange={handleCityChange}
+        />
+        <button onClick={fetchLocations}>Search</button>
+      </div>
       <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
         <Map
           className="map-container"
           defaultZoom={13}
-          defaultCenter={{ lat: 45.4215, lng: -75.6910 }}
+          defaultCenter={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onClick={handleMapClick}
         >
