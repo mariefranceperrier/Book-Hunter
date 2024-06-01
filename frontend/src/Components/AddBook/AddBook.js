@@ -10,7 +10,7 @@ const AddBook = () => {
     const navigate = useNavigate();
 
     const fetchBookDetails = async (isbn) => {
-        const apiKey = 'AIzaSyAZaIMpl6QSGkGRMDr1wgG95rnevN0Wovw';
+        const apiKey = process.env.REACT_APP_BOOK_API_KEY;
         const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${apiKey}`);
         if (response.ok) {
             const data = await response.json();
