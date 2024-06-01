@@ -65,7 +65,7 @@ VALUES
 (16, 'The Trial', 'Franz Kafka', 'Fiction', '9780805209990', 'Well Used', TRUE),
 (16, 'Fahrenheit 451', 'Ray Bradbury', 'Dystopian', '9781451673319', 'Rough', TRUE),
 (17, 'Brave New World', 'Aldous Huxley', 'Dystopian', '9780060850524', 'New', TRUE),
-(17, 'The Handmaid''s Tale', 'Margaret Atwood', 'Dystopian', '9780385490818', 'Lightly Used', TRUE),
+(17, 'The Handmaids Tale', 'Margaret Atwood', 'Dystopian', '9780385490818', 'Lightly Used', TRUE),
 (17, 'East of Eden', 'John Steinbeck', 'Fiction', '9780142004234', 'Well Used', FALSE),
 (17, 'A Farewell to Arms', 'Ernest Hemingway', 'Fiction', '9780684801469', 'Rough', TRUE),
 (18, 'Slaughterhouse-Five', 'Kurt Vonnegut', 'Fiction', '9780385333849', 'New', TRUE),
@@ -86,7 +86,7 @@ VALUES
 (21, 'Invisible Man', 'Ralph Ellison', 'Fiction', '9780679732761', 'Rough', TRUE),
 (22, 'The Sun Also Rises', 'Ernest Hemingway', 'Fiction', '9780743297335', 'New', TRUE),
 (22, 'Brave New World', 'Aldous Huxley', 'Dystopian', '9780060850524', 'Lightly Used', TRUE),
-(22, 'The Handmaid''s Tale', 'Margaret Atwood', 'Dystopian', '9780385490818', 'Well Used', TRUE),
+(22, 'The Handmaids Tale', 'Margaret Atwood', 'Dystopian', '9780385490818', 'Well Used', TRUE),
 (22, 'Animal Farm', 'George Orwell', 'Satire', '9780451526342', 'Rough', TRUE),
 (23, 'The Road', 'Cormac McCarthy', 'Post-apocalyptic', '9780307387899', 'New', TRUE),
 (23, 'Lord of the Flies', 'William Golding', 'Fiction', '9780399501487', 'Lightly Used', TRUE),
@@ -100,3 +100,4 @@ VALUES
 (25, 'The Metamorphosis', 'Franz Kafka', 'Fiction', '9780486290300', 'Lightly Used', TRUE),
 (25, 'The Old Man and the Sea', 'Ernest Hemingway', 'Fiction', '9780684801223', 'Well Used', TRUE),
 (25, 'The Count of Monte Cristo', 'Alexandre Dumas', 'Adventure', '9780140449266', 'Rough', TRUE);
+

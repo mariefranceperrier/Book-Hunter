@@ -4,10 +4,10 @@ const multer = require('multer');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
+const pool = require('./db/db');
 
 dotenv.config({ path: path.resolve(__dirname, './.env') });
 
-const pool = require('./db/db');
 const app = express();
 const upload = multer();
 
@@ -15,6 +15,48 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const getBookById = async (id) => {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT * FROM books WHERE id = $1', [id]);
+      return result.rows[0];
+    } finally {
+      client.release();
+    }
+  };
+  
+  const toggleBookAvailability = async (id) => {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        'UPDATE books SET is_available = NOT is_available WHERE id = $1 RETURNING *',
+        [id]
+      );
+      return result.rows[0];
+    } finally {
+      client.release();
+    }
+  };
+  
+  app.get('/api/books/:id', async (req, res) => {
+    try {
+      const book = await getBookById(req.params.id);
+      res.json(book);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to fetch book details.' });
+    }
+  });
+  
+  app.post('/api/books/:id/toggle', async (req, res) => {
+    try {
+      const book = await toggleBookAvailability(req.params.id);
+      res.json(book);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to update book availability.' });
+    }
+  });
 
 const createShelter = async (civicNumber, streetName, city, picture) => {
     const client = await pool.connect();
@@ -30,16 +72,14 @@ const createShelter = async (civicNumber, streetName, city, picture) => {
 };
 
 app.get('/api/shelters', async (req, res) => {
-  try {
-    const shelters = await pool.query('SELECT * FROM shelters');
-    res.json(shelters.rows);
-  } catch (error) {
-    console.error('Error fetching shelter data:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const shelters = await pool.query('SELECT * FROM shelters');
+        res.json(shelters.rows);
+    } catch (error) {
+        console.error('Error fetching shelter data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
-
-
 
 app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     try {
@@ -68,10 +108,10 @@ const createBook = async (barcode, condition, title, author, genre) => {
         client.release();
     }
 };
-  
-  app.post('/api/books', async (req, res) => {
+
+app.post('/api/books', async (req, res) => {
     try {
-        const { isbn: barcode, condition, title, author, genre } = req.body;
+        const { isbn: barcode, condition, title, author, genre} = req.body;
         const book = await createBook(barcode, condition, title, author, genre);
         res.status(201).json(book);
     } catch (error) {
@@ -95,9 +135,9 @@ app.post('/api/search', async (req, res) => {
     `;
 
     const values = [
-        `%${title || ''}%`, 
-        `%${author || ''}%`, 
-        `%${genre || ''}%`, 
+        `%${title || ''}%`,
+        `%${author || ''}%`,
+        `%${genre || ''}%`,
         `%${city || ''}%`
     ];
 
