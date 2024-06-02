@@ -74,6 +74,8 @@ const createShelter = async (civicNumber, streetName, city, picture) => {
 app.get('/api/shelters', async (req, res) => {
   try {
     const { city } = req.query;
+    console.log('City query parameter:', city);  // Debug log
+
     let query = 'SELECT * FROM shelters';
     let values = [];
     if (city) {
@@ -82,6 +84,8 @@ app.get('/api/shelters', async (req, res) => {
     }
 
     const shelters = await pool.query(query, values);
+    console.log('Shelters from database:', shelters.rows);  // Debug log
+    
     res.json(shelters.rows);
   } catch (error) {
     console.error('Error fetching shelter data:', error);

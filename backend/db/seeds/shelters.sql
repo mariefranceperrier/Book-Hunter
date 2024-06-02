@@ -38,6 +38,6 @@ VALUES
 (800, 'Granville St', 'Vancouver', '(49.2827, -123.1207)', NULL),
 (900, 'Main St', 'Vancouver', '(49.2827, -123.1207)', NULL),
 
-(100, 'Whyte Ave NW', 'Alberta', '(53.5229, -113.5158)', NULL),
-(200, 'Jasper Ave', 'Alberta', '(53.5342, -113.5016)', NULL),
-(300, 'Rue 104 St NW', 'Alberta', '(53.5417, -113.4995)', NULL);
+(100, 'Calgary Trail', 'Edmonton', '(53.514111, -113.511193)', NULL),
+(200, 'Whyte Ave', 'Edmonton', '(53.519137, -113.493799)', NULL),
+(150, 'Jasper Ave', 'Edmonton', '(53.540778, -113.493446)', NULL);

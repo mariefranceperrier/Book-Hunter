@@ -78,6 +78,11 @@ const AllShelters = () => {
         }).filter(shelter => shelter !== null);
         console.log('Fetched data:', data);
         setLocations(data);
+
+        // Set map center based on the first location of the fetched data
+        if (data.length > 0) {
+          setMapCenter({ lat: data[0].location.lat, lng: data[0].location.lng });
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
