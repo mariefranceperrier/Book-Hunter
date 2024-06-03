@@ -136,7 +136,7 @@ app.post('/api/search', async (req, res) => {
     const { title, author, genre, city } = req.body;
 
     const query = `
-        SELECT b.title, b.author, b.genre, s.city
+        SELECT b.title, b.author, b.genre, b.barcode, s.city
         FROM books b
         JOIN shelters s ON b.shelter_id = s.id
         WHERE 
