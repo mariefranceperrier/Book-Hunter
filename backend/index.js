@@ -166,6 +166,17 @@ app.post('/api/search', async (req, res) => {
     }
 });
 
+app.get('/api/shelters/:id/books', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM books WHERE shelter_id = $1', [id]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching shelter books:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
 });
