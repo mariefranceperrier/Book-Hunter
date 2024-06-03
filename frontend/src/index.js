@@ -11,6 +11,7 @@ import AddShelter from './Components/AddShelter/AddShelter';
 import AddBook from './Components/AddBook/AddBook';
 import Book from './Components/Book/Book';
 import ErrorPage from './ErrorPage/ErrorPage';
+import ShelterBookList from './Components/ShelterBookList/ShelterBookList';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         path: '/books/:bookId',
         element: <Book />,
       },
+      {
+        path: 'shelter/:id',
+        element: <ShelterBookList />,
+      }
     ],
   },
   

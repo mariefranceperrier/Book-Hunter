@@ -132,7 +132,7 @@ app.post('/api/search', async (req, res) => {
     const { title, author, genre, city } = req.body;
 
     const query = `
-        SELECT b.title, b.author, b.genre, b.barcode, s.city
+        SELECT b.title, b.author, b.genre, b.barcode, b.shelter_id, s.city
         FROM books b
         JOIN shelters s ON b.shelter_id = s.id
         WHERE 
@@ -159,6 +159,17 @@ app.post('/api/search', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
+    }
+});
+
+app.get('/api/shelters/:id/books', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM books WHERE shelter_id = $1', [id]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching shelter books:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

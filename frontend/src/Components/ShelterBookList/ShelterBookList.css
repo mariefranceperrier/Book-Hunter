@@ -1,0 +1,46 @@
+.shelter-books {
+  text-align: center;
+}
+
+.book-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.book-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.book {
+  margin: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  width: 200px;
+  vertical-align: top;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.book:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.book img {
+  width: 128px;
+  height: 192px;
+  margin-bottom: 10px;
+}
+
+.book h2 {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.book p {
+  margin: 5px 0;
+}
