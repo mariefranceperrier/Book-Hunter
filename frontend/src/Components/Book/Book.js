@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./Book.css";
 
 const Book = () => {
   const { bookId } = useParams();
@@ -13,17 +14,24 @@ const Book = () => {
         const response = await fetch(`http://localhost:5000/api/books/${bookId}`);
         if (response.ok) {
           const data = await response.json();
-          const googleBooksResponse = await fetch(
-            `https://www.googleapis.com/books/v1/volumes?q=isbn:${data.barcode}&key=${process.env.REACT_APP_BOOK_API_KEY}`
-          );
-          const googleBooksData = await googleBooksResponse.json();
-          const imageUrl = googleBooksData.items[0]?.volumeInfo?.imageLinks?.thumbnail || "https://via.placeholder.com/128x195.png?text=No+Image+Available";
-          setBook({ ...data, imageUrl });
+          setBook(data);
+
+          try {
+            const googleBooksResponse = await fetch(
+              `https://www.googleapis.com/books/v1/volumes?q=isbn:${data.barcode}&key=${process.env.REACT_APP_BOOK_API_KEY}`
+            );
+            const googleBooksData = await googleBooksResponse.json();
+            const imageUrl = googleBooksData.items[0]?.volumeInfo?.imageLinks?.thumbnail || "https://via.placeholder.com/128x195.png?text=No+Image+Available";
+            setBook((prevBook) => ({ ...prevBook, imageUrl }));
+          } catch (error) {
+            console.error('Error fetching book cover image:', error);
+            setBook((prevBook) => ({ ...prevBook, imageUrl: "https://via.placeholder.com/128x195.png?text=No+Image+Available" }));
+          }
         } else {
           setError('Failed to fetch book details.');
         }
       } catch (error) {
-        console.error(error);
+        console.error('An error occurred while fetching book details:', error);
         setError('An error occurred while fetching book details.');
       } finally {
         setLoading(false);
@@ -45,7 +53,7 @@ const Book = () => {
         setError('Failed to update book availability.');
       }
     } catch (error) {
-      console.error(error);
+      console.error('An error occurred while updating book availability:', error);
       setError('An error occurred while updating book availability.');
     }
   };
@@ -55,7 +63,10 @@ const Book = () => {
 
   return (
     <main className="book-details">
-      <button onClick={toggleAvailability}>
+      <button 
+        onClick={toggleAvailability} 
+        className={book.is_available ? 'gotcha-button' : 'checkin-button'}
+      >
         {book.is_available ? 'Gotcha!' : 'Check In'}
       </button>
       <div className="book-info">
@@ -70,5 +81,4 @@ const Book = () => {
 };
 
 export default Book;
-
 

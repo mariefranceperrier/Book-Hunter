@@ -1,27 +1,42 @@
 .all-shelters-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: rgb(208, 223, 177);
+  padding: 10px;
 }
 
 .search-container {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
   gap: 10px;
-  width: 70%;
+  margin-bottom: 10px;
+}
 
+.search-container input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .search-container button {
-  margin-bottom: 7px;
+  padding: 10px;
+  background-color: #6b8e23;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+  background-color: #556b2f;
 }
 
 .map-container {
   width: 70%;
-  height: 90%;
-  margin-top: 15px;
+  height: 80%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
 }

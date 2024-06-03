@@ -4,11 +4,41 @@
   margin-top: 0.5em;
 }
 
-input[type="text"], input[type="file"], select, button {
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+form div {
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px;
+}
+
+label {
   display: block;
-  margin-top: 0.5em;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
 }
 
 button {
-  margin-top: 1em;
+  background-color: #6b8e23;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #556b2f;
 }

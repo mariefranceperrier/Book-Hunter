@@ -1,8 +1,15 @@
-body,
-html {
+body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: 'Roboto', sans-serif;
-  background-color:rgb(208, 223, 177);
+  font-family: 'Merriweather', sans-serif;
+  background-color: rgb(208, 223, 177);
+}
+
+h1 {
+  font-family: 'Lora', serif;
+}
+
+main {
+  padding: 20px;
 }

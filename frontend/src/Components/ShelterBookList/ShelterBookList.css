@@ -1,11 +1,17 @@
 .shelter-books {
   text-align: center;
+  padding: 20px;
+  background-color: rgb(208, 223, 177);
+  border-radius: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .book-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 20px;
 }
 
 .book-link {
@@ -14,16 +20,15 @@
 }
 
 .book {
-  margin: 20px;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
   width: 200px;
-  vertical-align: top;
+  background-color: rgba(189, 202, 160, 0.192);
+  transition: box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: box-shadow 0.3s ease;
 }
 
 .book:hover {
@@ -34,13 +39,28 @@
   width: 128px;
   height: 192px;
   margin-bottom: 10px;
+  font-size: 0.7em;
+}
+
+.shelter-books h1 {
+  margin-bottom: 20px;
+  font-size: 1.2em;
 }
 
 .book h2 {
-  font-size: 1.2em;
-  margin: 10px 0;
+  font-size: 0.7em;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .book p {
   margin: 5px 0;
+  font-size: 0.6em;
+  text-align: center;
+}
+
+.book h2 {
+  font-size: 0.8em;
+  margin-bottom: 10px;
+  text-align: center;
 }

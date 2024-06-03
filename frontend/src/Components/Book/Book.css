@@ -1,0 +1,55 @@
+.book-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(208, 223, 177);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  font-family: 'Merriweather', sans-serif;
+}
+
+.book-details button {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.book-details .gotcha-button {
+  background-color: #800080;
+}
+
+.book-details .gotcha-button:hover {
+  background-color: #660066;
+}
+
+.book-details .checkin-button {
+  background-color: #FFD700;
+  color: black;
+}
+
+.book-details .checkin-button:hover {
+  background-color: #FFC700;
+}
+
+.book-info {
+  text-align: center;
+}
+
+.book-info img {
+  width: 128px;
+  height: 192px;
+  margin-bottom: 20px;
+}
+
+.book-info h2 {
+  margin-bottom: 10px;
+}
+

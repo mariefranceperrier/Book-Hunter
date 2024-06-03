@@ -44,15 +44,17 @@ const SearchResults = () => {
   return (
     <main className="search-results">
       <h1>Search Results</h1>
-      {booksWithImages.map((result, index) => (
+      {results.map((result, index) => (
         <div key={index} className="result">
-          <h2>{result.title}</h2>
           <img src={result.imageUrl} alt={`${result.title} cover`} />
-          <p>Author: {result.author}</p>
-          <p>Genre: {result.genre}</p>
-          <h3>Location</h3>
-          <p>City: {result.city}</p>
-          <button className="view-shelter-btn" onClick={ () => handleViewShelter(result.shelter_id)}>View Shelter</button>
+          <div className="result-content">
+            <h2>{result.title}</h2>
+            <p>Author: {result.author}</p>
+            <p>Genre: {result.genre}</p>
+            <h3>Location</h3>
+            <p id="cityResult">City: {result.city}</p>
+            <button className="view-shelter-btn" onClick={() => handleViewShelter(result.shelter_id)}>View Shelter</button>
+          </div>
         </div>
       ))}
     </main>
