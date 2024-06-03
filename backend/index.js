@@ -79,13 +79,13 @@ app.get('/api/shelters', async (req, res) => {
     let query = 'SELECT * FROM shelters';
     let values = [];
     if (city) {
-      query += ' WHERE city = $1';
-      values.push(city);
+      query += ' WHERE city ILIKE $1';
+      values.push(`%${city}%`);
     }
 
     const shelters = await pool.query(query, values);
     console.log('Shelters from database:', shelters.rows);  // Debug log
-    
+
     res.json(shelters.rows);
   } catch (error) {
     console.error('Error fetching shelter data:', error);
