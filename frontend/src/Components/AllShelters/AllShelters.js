@@ -44,9 +44,39 @@ const AllShelters = () => {
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
+  const [map, setMap] = useState(null);
+
+
+  const fetchCityCoordinates = async (city) => {
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+        params: {
+          address: city,
+          key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+        }
+      });
+      if (response.data.results && response.data.results.length > 0) {
+        const location = response.data.results[0].geometry.location;
+        return location;
+      } else {
+        throw new Error(`No results found for city: ${city}`);
+      }
+    } catch (error) {
+      console.error('Error fetching city coordinates:', error);
+      return null;
+    }
+  };
 
   const fetchLocations = useCallback(async () => {
       try {
+        const cityCoordinates = await fetchCityCoordinates(selectedCity);
+        if (cityCoordinates) {
+          setMapCenter({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
+          if (map) {
+            map.panTo({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
+          }
+        }
+
         const response = await axios.get(`/api/shelters?city=${selectedCity}`);
         console.log('Response data:', response.data);
         const data = response.data.map((shelter, index) => {
@@ -75,24 +105,54 @@ const AllShelters = () => {
             };
           }
           return null;
-        }).filter(shelter => shelter !== null);
-        console.log('Fetched data:', data);
-        setLocations(data);
-
-        // Set map center based on the first location of the fetched data
-        if (data.length > 0) {
-          setMapCenter({ lat: data[0].location.lat, lng: data[0].location.lng });
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-  }, [selectedCity]);     
+       }).filter(shelter => shelter !== null);
+      console.log('Fetched data:', data);
+      setLocations(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, [selectedCity, map]);  
     
   
-  useEffect(() => {
-    fetchLocations();
-  }, [fetchLocations]);
-  
+ useEffect(() => {
+    const fetchInitialLocations = async () => {
+      try {
+        const response = await axios.get('/api/shelters');
+        const data = response.data.map((shelter, index) => {
+          let coords;
+          if (typeof shelter.pin_coord === 'string') {
+            coords = shelter.pin_coord
+              .replace(/[()]/g, '')
+              .split(',')
+              .map(coord => parseFloat(coord.trim()));
+          } else if (Array.isArray(shelter.pin_coord)) {
+            coords = shelter.pin_coord;
+          } else if (typeof shelter.pin_coord === 'object' && shelter.pin_coord !== null) {
+            coords = [shelter.pin_coord.x, shelter.pin_coord.y];
+          } else {
+            console.error('Unknown format for pin_coord:', shelter.pin_coord);
+            return null;
+          }
+
+          if (coords.length === 2) {
+            return {
+              key: `shelterID${index + 1}`,
+              location: {
+                lat: coords[0],
+                lng: coords[1],
+              },
+            };
+          }
+          return null;
+        }).filter(shelter => shelter !== null);
+        setLocations(data);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+
+    fetchInitialLocations();
+  }, []);
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
@@ -124,9 +184,10 @@ const AllShelters = () => {
         <Map
           className="map-container"
           defaultZoom={13}
-          defaultCenter={mapCenter}
+          center={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onClick={handleMapClick}
+          onLoad={mapInstance => setMap(mapInstance)}
         >
           <PoiMarkers pois={locations} />
         </Map>
