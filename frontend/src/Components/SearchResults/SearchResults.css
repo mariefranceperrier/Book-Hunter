@@ -1,0 +1,40 @@
+.search-results {
+  text-align: center;
+}
+
+.result {
+  margin: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block;
+  width: 200px;
+  vertical-align: top;
+  text-align: center;
+}
+
+.result img {
+  width: 128px;
+  height: 192px;
+  margin-bottom: 10px;
+}
+
+.result h2 {
+  font-size: 1.2em;
+}
+
+.result p {
+  margin: 5px 0;
+}
+
+.view-shelter-btn {
+  display: inline-block;
+  margin: 10px auto;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+}

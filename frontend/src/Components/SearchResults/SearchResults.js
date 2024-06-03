@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResults.css';
 
 //if we were simply displaying the results, we could use the following code:
@@ -9,6 +9,11 @@ const SearchResults = () => {
   const location = useLocation();
   const { results } = location.state;
   const [booksWithImages, setBooksWithImages] = useState([]);
+  const navigate = useNavigate();
+
+  const handleViewShelter = (shelterId) => {
+    navigate(`/shelter/${shelterId}`);
+  };
 
   useEffect(() => {
     const fetchBookImages = async () => {
@@ -45,8 +50,9 @@ const SearchResults = () => {
           <img src={result.imageUrl} alt={`${result.title} cover`} />
           <p>Author: {result.author}</p>
           <p>Genre: {result.genre}</p>
-          <h3>Shelter</h3>
+          <h3>Location</h3>
           <p>City: {result.city}</p>
+          <button className="view-shelter-btn" onClick={ () => handleViewShelter(result.shelter_id)}>View Shelter</button>
         </div>
       ))}
     </main>
