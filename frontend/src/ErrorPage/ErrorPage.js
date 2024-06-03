@@ -1,4 +1,3 @@
-import react from 'react';
 import './ErrorPage.css';
 
 const ErrorPage = () => {

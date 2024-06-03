@@ -8,7 +8,7 @@ import './SearchResults.css';
 const SearchResults = () => {
   const location = useLocation();
   const { results } = location.state;
-  const [booksWithImages, setBooksWithImages] = useState([]);
+  const [, setBooksWithImages] = useState([]);
   const navigate = useNavigate();
 
   const handleViewShelter = (shelterId) => {
