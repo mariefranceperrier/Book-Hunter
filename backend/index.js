@@ -168,15 +168,20 @@ app.post('/api/search', async (req, res) => {
     const { title, author, genre, city } = req.body;
 
     const query = `
-        SELECT b.title, b.author, b.genre, b.barcode, b.shelter_id, s.city
-        FROM books b
-        JOIN shelters s ON b.shelter_id = s.id
-        WHERE 
-            (b.title ILIKE $1 OR $1 = '') AND
-            (b.author ILIKE $2 OR $2 = '') AND
-            (b.genre ILIKE $3 OR $3 = '') AND
-            (s.city ILIKE $4 OR $4 = '')
-    `;
+    SELECT 
+        b.title, b.author, b.genre, b.barcode, b.shelter_id, 
+        s.city, 
+        s.pin_coord AS pin_coord_raw,
+        ST_X(s.pin_coord) AS longitude,
+        ST_Y(s.pin_coord) AS latitude
+    FROM books b
+    JOIN shelters s ON b.shelter_id = s.id
+    WHERE 
+        (b.title ILIKE $1 OR $1 IS NULL OR $1 = '') AND
+        (b.author ILIKE $2 OR $2 IS NULL OR $2 = '') AND
+        (b.genre ILIKE $3 OR $3 IS NULL OR $3 = '') AND
+        (s.city ILIKE $4 OR $4 IS NULL OR $4 = '')
+`;
 
     const values = [
         `%${title || ''}%`,

@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AddShelter.css';
+import { useShelters } from '../../ShelterContext';
 
-const AddShelter = ({ onShelterAdded }) => {
+const AddShelter = () => {
     const [civicNumber, setCivicNumber] = useState('');
     const [streetName, setStreetName] = useState('');
     const [city, setCity] = useState('');
     const [picture, setPicture] = useState(null);
     const [error, setError] = useState('');
 
+    const { handleShelterAdded } = useShelters();
+    const navigate = useNavigate();
+
     const validateCivicNumber = (value) => {
         return /^\d+$/.test(value);
     };
 
     const validateStreetName = (value) => {
-        return /^[A-Za-z0-9\s]+$/.test(value) && value.length <= 50;
+         return /^[A-Za-z0-9\s-]+$/.test(value) && value.length <= 50;
     };
 
     const validateCityName = (value) => {
@@ -46,7 +51,8 @@ const AddShelter = ({ onShelterAdded }) => {
 
                 if (response.ok) {
                     console.log('Shelter added successfully');
-                    onShelterAdded(); // // Notify parent component (AllShelters)to refetch shelters
+                    handleShelterAdded();
+                    navigate('/allshelters');
                 } else {
                     console.error('Failed to add shelter');
                 }
