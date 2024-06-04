@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 import './SearchResults.css';
-
 
 const SearchResults = () => {
   const location = useLocation();
   const { results } = location.state;
   const navigate = useNavigate();
+  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+
+  useEffect(() => {
+    if (results.length > 0) {
+      const averageLat = results.reduce((sum, result) => sum + parseFloat(result.latitude), 0) / results.length;
+      const averageLng = results.reduce((sum, result) => sum + parseFloat(result.longitude), 0) / results.length;
+      setMapCenter({ lat: averageLat, lng: averageLng });
+    }
+  }, [results]);
 
   const handleViewShelter = (shelterId) => {
     navigate(`/shelter/${shelterId}`);
@@ -21,24 +29,20 @@ const SearchResults = () => {
           <Map
             className="map"
             defaultZoom={10}
-            center={{ lat: 0, lng: 0 }} // Initial center, will be updated dynamically
+            center={mapCenter}
+            style={{ width: '100%', height: '400px' }}
+            scrollwheel={true}
           >
             {results.map((result, index) => (
               <Marker
                 key={index}
-                position={{ lat: result.latitude, lng: result.longitude }}
+                position={{ lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }}
                 onClick={() => handleViewShelter(result.shelter_id)}
               />
             ))}
           </Map>
         </APIProvider>
       </div>
-      {results.map((result, index) => (
-        <div key={index} className="result">
-          {/* Render book information */}
-          <button className="view-shelter-btn" onClick={() => handleViewShelter(result.shelter_id)}>View Shelter</button>
-        </div>
-      ))}
     </main>
   );
 }
