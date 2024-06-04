@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AddShelter.css';
 
-const AddShelter = () => {
+const AddShelter = ({ onShelterAdded }) => {
     const [civicNumber, setCivicNumber] = useState('');
     const [streetName, setStreetName] = useState('');
     const [city, setCity] = useState('');
@@ -39,13 +39,14 @@ const AddShelter = () => {
             }
 
             try {
-                const response = await fetch('http://localhost:5000/api/shelters', {
+                const response = await fetch('/api/shelters', {
                     method: 'POST',
                     body: formData,
                 });
 
                 if (response.ok) {
                     console.log('Shelter added successfully');
+                    onShelterAdded(); // // Notify parent component (AllShelters)to refetch shelters
                 } else {
                     console.error('Failed to add shelter');
                 }

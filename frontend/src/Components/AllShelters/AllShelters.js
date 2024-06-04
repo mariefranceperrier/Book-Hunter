@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
+import AddShelter from '../AddShelter/AddShelter';
 import './AllShelters.css';
 
 
@@ -158,17 +159,11 @@ const AllShelters = () => {
     setSelectedCity(e.target.value);
   };
 
-  const handleMapClick = useCallback((ev) => {
-    if (!ev.latLng) return;
-    const newLocation = {
-      key: `location-${locations.length + 1}`,
-      location: { lat: ev.latLng.lat(), lng: ev.latLng.lng() }
-    };
-    setLocations([...locations, newLocation]);
-  }, [locations]);
+  const handleShelterAdded = () => {
+    fetchLocations();
+  };
 
-
-
+ 
   return (
     <div className="all-shelters-container">
       <div className="search-container">
@@ -186,7 +181,6 @@ const AllShelters = () => {
           defaultZoom={13}
           center={mapCenter}
           mapID='e187bd2cd82b5d4f'
-          onClick={handleMapClick}
           onLoad={mapInstance => setMap(mapInstance)}
         >
           <PoiMarkers pois={locations} />

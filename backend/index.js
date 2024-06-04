@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 const pool = require('./db/db');
+const axios = require('axios');
 
 dotenv.config({ path: path.resolve(__dirname, './.env') });
 
@@ -15,6 +16,78 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+// Utility function to get geocode for an address
+const getGeocode = async (address) => {
+    try {
+        const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+            params: {
+                address: address,
+                key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+            }
+        });
+        if (response.data.results && response.data.results.length > 0) {
+            return response.data.results[0].geometry.location;
+        }
+        throw new Error('No results found');
+    } catch (error) {
+        console.error('Error fetching geocode:', error);
+        throw error;
+    }
+};
+
+
+// Function to create a new shelter with coordinates
+const createShelter = async (civicNumber, streetName, city, pinCoord, picture) => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [civicNumber, streetName, city, pinCoord, picture]
+        );
+        return result.rows[0];
+    } finally {
+        client.release();
+    }
+};
+
+// Endpoint to get shelters
+app.get('/api/shelters', async (req, res) => {
+  try {
+    const { city } = req.query;
+    let query = 'SELECT * FROM shelters';
+    let values = [];
+    if (city) {
+      query += ' WHERE city ILIKE $1';
+      values.push(`%${city}%`);
+    }
+
+    const shelters = await pool.query(query, values);
+    res.json(shelters.rows);
+  } catch (error) {
+    console.error('Error fetching shelter data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Endpoint to create a new shelter
+app.post('/api/shelters', upload.single('picture'), async (req, res) => {
+    try {
+        const { civic_number, street_name, city } = req.body;
+        const picture = req.file ? req.file.buffer : null;
+        const address = `${civic_number} ${street_name}, ${city}`;
+        const geocode = await getGeocode(address);
+        const pinCoord = `(${geocode.lat}, ${geocode.lng})`;
+        const shelter = await createShelter(civic_number, street_name, city, pinCoord, picture);
+        res.status(201).json(shelter);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Book-related endpoints and functions
 const getBookById = async (id) => {
     const client = await pool.connect();
     try {
@@ -58,49 +131,8 @@ const getBookById = async (id) => {
     }
   });
 
-const createShelter = async (civicNumber, streetName, city, picture) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query(
-            'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [civicNumber, streetName, city, null, picture]
-        );
-        return result.rows[0];
-    } finally {
-        client.release();
-    }
-};
 
-app.get('/api/shelters', async (req, res) => {
-  try {
-    const { city } = req.query;
-    let query = 'SELECT * FROM shelters';
-    let values = [];
-    if (city) {
-      query += ' WHERE city ILIKE $1';
-      values.push(`%${city}%`);
-    }
-
-    const shelters = await pool.query(query, values);
-    res.json(shelters.rows);
-  } catch (error) {
-    console.error('Error fetching shelter data:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-app.post('/api/shelters', upload.single('picture'), async (req, res) => {
-    try {
-        const { civic_number, street_name, city } = req.body;
-        const picture = req.file ? req.file.buffer : null;
-        const shelter = await createShelter(civic_number, street_name, city, picture);
-        res.status(201).json(shelter);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
+// Function to create a new book
 const createBook = async (barcode, condition, title, author, genre) => {
     const client = await pool.connect();
     try {
@@ -117,6 +149,8 @@ const createBook = async (barcode, condition, title, author, genre) => {
     }
 };
 
+
+// Endpoint to create a new book
 app.post('/api/books', async (req, res) => {
     try {
         const { isbn: barcode, condition, title, author, genre} = req.body;
@@ -128,6 +162,8 @@ app.post('/api/books', async (req, res) => {
     }
 });
 
+
+// Endpoint to search for books
 app.post('/api/search', async (req, res) => {
     const { title, author, genre, city } = req.body;
 
@@ -162,6 +198,8 @@ app.post('/api/search', async (req, res) => {
     }
 });
 
+
+// Endpoint to get books for a specific shelter
 app.get('/api/shelters/:id/books', async (req, res) => {
     try {
         const { id } = req.params;
@@ -172,6 +210,9 @@ app.get('/api/shelters/:id/books', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
