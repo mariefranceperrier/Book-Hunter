@@ -10,6 +10,7 @@ const AddBook = () => {
   const [success, setSuccess] = useState(false);
   const [shelters, setShelters] = useState([]);
   const [selectedShelter, setSelectedShelter] = useState(null);
+  const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,22 @@ const AddBook = () => {
     };
     fetchShelters();
   }, []);
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // If geolocation is available, set the map center to the user's location
+          setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+          // If geolocation is not available, the map center remains the same
+        }
+      );
+    }
+  }, []);
+
 
   const fetchBookDetails = async (isbn) => {
     const apiKey = process.env.REACT_APP_BOOK_API_KEY;
@@ -130,12 +147,10 @@ const AddBook = () => {
           <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
             <Map
               className="map-container"
-              initialViewState={{
-                longitude: 0,
-                latitude: 0,
-                zoom: 2,
-              }}
+              defaultZoom={13}
+              defaultCenter={mapCenter}
               style={{ width: '100%', height: '400px' }}
+              scrollwheel={true}
             >
               {shelters.map((shelter) => {
                 const lat = shelter.pin_coord.x;
