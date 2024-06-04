@@ -182,6 +182,7 @@ const AllShelters = () => {
           center={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onLoad={mapInstance => setMap(mapInstance)}
+          scrollwheel={true}
         >
           <PoiMarkers pois={locations} />
         </Map>
