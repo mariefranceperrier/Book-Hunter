@@ -1,62 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 import './SearchResults.css';
-
-//if we were simply displaying the results, we could use the following code:
-//this info will probably serve as inspiration for the Google API pins
 
 const SearchResults = () => {
   const location = useLocation();
   const { results } = location.state;
-  const [, setBooksWithImages] = useState([]);
   const navigate = useNavigate();
+  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+
+  useEffect(() => {
+    if (results.length > 0) {
+      const averageLat = results.reduce((sum, result) => sum + parseFloat(result.latitude), 0) / results.length;
+      const averageLng = results.reduce((sum, result) => sum + parseFloat(result.longitude), 0) / results.length;
+      setMapCenter({ lat: averageLat, lng: averageLng });
+    }
+  }, [results]);
 
   const handleViewShelter = (shelterId) => {
     navigate(`/shelter/${shelterId}`);
   };
 
-  useEffect(() => {
-    const fetchBookImages = async () => {
-      const apiKey = process.env.REACT_APP_BOOK_API_KEY;
-      const booksWithImages = await Promise.all(results.map(async (result) => {
-        if (result.barcode) {
-          const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${result.barcode}&key=${apiKey}`);
-          const data = await response.json();
-          if (data.totalItems > 0 && data.items[0].volumeInfo) {
-            const book = data.items[0].volumeInfo;
-            return {
-              ...result,
-              imageUrl: book.imageLinks ? book.imageLinks.thumbnail : 'https://via.placeholder.com/128x192.png?text=No+Image'
-            };
-          }
-        }
-        return {
-          ...result,
-          imageUrl: 'https://via.placeholder.com/128x192.png?text=No+Image'
-        };
-      }));
-      setBooksWithImages(booksWithImages);
-    };
-
-    fetchBookImages();
-  }, [results]);
-
   return (
     <main className="search-results">
       <h1>Search Results</h1>
-      {results.map((result, index) => (
-        <div key={index} className="result">
-          <img src={result.imageUrl} alt={`${result.title} cover`} />
-          <div className="result-content">
-            <h2>{result.title}</h2>
-            <p>Author: {result.author}</p>
-            <p>Genre: {result.genre}</p>
-            <h3>Location</h3>
-            <p id="cityResult">City: {result.city}</p>
-            <button className="view-shelter-btn" onClick={() => handleViewShelter(result.shelter_id)}>View Shelter</button>
-          </div>
-        </div>
-      ))}
+      <div className="map-container">
+        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+          <Map
+            className="map"
+            defaultZoom={10}
+            center={mapCenter}
+            style={{ width: '100%', height: '400px' }}
+            scrollwheel={true}
+          >
+            {results.map((result, index) => (
+              <Marker
+                key={index}
+                position={{ lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }}
+                onClick={() => handleViewShelter(result.shelter_id)}
+              />
+            ))}
+          </Map>
+        </APIProvider>
+      </div>
     </main>
   );
 }

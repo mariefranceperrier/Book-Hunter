@@ -166,37 +166,45 @@ app.post('/api/books', async (req, res) => {
 
 // Endpoint to search for books
 app.post('/api/search', async (req, res) => {
-    const { title, author, genre, city } = req.body;
+  const { title, author, genre, city } = req.body;
 
-    const query = `
-        SELECT b.title, b.author, b.genre, b.barcode, b.shelter_id, s.city
-        FROM books b
-        JOIN shelters s ON b.shelter_id = s.id
-        WHERE 
-            (b.title ILIKE $1 OR $1 = '') AND
-            (b.author ILIKE $2 OR $2 = '') AND
-            (b.genre ILIKE $3 OR $3 = '') AND
-            (s.city ILIKE $4 OR $4 = '')
-    `;
+  const query = `
+      SELECT 
+          b.title, 
+          b.author, 
+          b.genre, 
+          b.barcode, 
+          b.shelter_id, 
+          s.city, 
+          ST_X(s.pin_coord::geometry) AS latitude, 
+          ST_Y(s.pin_coord::geometry) AS longitude
+      FROM books b
+      JOIN shelters s ON b.shelter_id = s.id
+      WHERE 
+          (b.title ILIKE $1 OR $1 IS NULL OR $1 = '') AND
+          (b.author ILIKE $2 OR $2 IS NULL OR $2 = '') AND
+          (b.genre ILIKE $3 OR $3 IS NULL OR $3 = '') AND
+          (s.city ILIKE $4 OR $4 IS NULL OR $4 = '')
+  `;
 
-    const values = [
-        `%${title || ''}%`,
-        `%${author || ''}%`,
-        `%${genre || ''}%`,
-        `%${city || ''}%`
-    ];
+  const values = [
+      `%${title || ''}%`,
+      `%${author || ''}%`,
+      `%${genre || ''}%`,
+      `%${city || ''}%`
+  ];
 
-    try {
-        const results = await pool.query(query, values);
-        if (results.rows.length > 0) {
-            res.json({ found: true, results: results.rows });
-        } else {
-            res.json({ found: false });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send(err);
-    }
+  try {
+      const results = await pool.query(query, values);
+      if (results.rows.length > 0) {
+          res.json({ found: true, results: results.rows });
+      } else {
+          res.json({ found: false });
+      }
+  } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+  }
 });
 
 

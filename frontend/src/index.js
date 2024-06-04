@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { ShelterProvider } from './ShelterContext';
 
 import Search from './Components/Search/Search';
 import SearchResults from './Components/SearchResults/SearchResults';
@@ -19,45 +20,24 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      {
-        path: '/',
-        element: <Search />,
-      },
-      {
-        path: '/searchresults',
-        element: <SearchResults />,
-      },
-      {
-        path: '/allshelters',
-        element: <AllShelters />,
-      },
-      {
-        path: '/addshelter',
-        element: <AddShelter />,
-      },
-      {
-        path: '/addbook',
-        element: <AddBook />,
-      },
-      {
-        path: '/books/:bookId',
-        element: <Book />,
-      },
-      {
-        path: 'shelter/:id',
-        element: <ShelterBookList />,
-      }
+      { path: '/', element: <Search /> },
+      { path: '/searchresults', element: <SearchResults /> },
+      { path: '/allshelters', element: <AllShelters /> },
+      { path: '/addshelter', element: <AddShelter /> },
+      { path: '/addbook', element: <AddBook /> },
+      { path: '/books/:bookId', element: <Book /> },
+      { path: 'shelter/:id', element: <ShelterBookList /> },
     ],
   },
-  
 ]);
-
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ShelterProvider>
+      <RouterProvider router={router} />
+    </ShelterProvider>
   </React.StrictMode>
 );
 
