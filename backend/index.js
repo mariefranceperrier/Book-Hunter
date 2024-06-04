@@ -39,17 +39,18 @@ const getGeocode = async (address) => {
 
 // Function to create a new shelter with coordinates
 const createShelter = async (civicNumber, streetName, city, pinCoord, picture) => {
-    const client = await pool.connect();
-    try {
-        const result = await client.query(
-            'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [civicNumber, streetName, city, pinCoord, picture]
-        );
-        return result.rows[0];
-    } finally {
-        client.release();
-    }
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [civicNumber, streetName, city, pinCoord, picture]
+    );
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
 };
+
 
 // Endpoint to get shelters
 app.get('/api/shelters', async (req, res) => {
@@ -72,18 +73,18 @@ app.get('/api/shelters', async (req, res) => {
 
 // Endpoint to create a new shelter
 app.post('/api/shelters', upload.single('picture'), async (req, res) => {
-    try {
-        const { civic_number, street_name, city } = req.body;
-        const picture = req.file ? req.file.buffer : null;
-        const address = `${civic_number} ${street_name}, ${city}`;
-        const geocode = await getGeocode(address);
-        const pinCoord = `(${geocode.lat}, ${geocode.lng})`;
-        const shelter = await createShelter(civic_number, street_name, city, pinCoord, picture);
-        res.status(201).json(shelter);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
+  try {
+    const { civic_number, street_name, city } = req.body;
+    const picture = req.file ? req.file.buffer : null;
+    const address = `${civic_number} ${street_name}, ${city}`;
+    const geocode = await getGeocode(address);
+    const pinCoord = `(${geocode.lat}, ${geocode.lng})`;
+    const shelter = await createShelter(civic_number, street_name, city, pinCoord, picture);
+    res.status(201).json(shelter);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 

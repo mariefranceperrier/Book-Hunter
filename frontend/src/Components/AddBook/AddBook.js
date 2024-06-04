@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Map, Marker, APIProvider } from '@vis.gl/react-google-maps';
 import './AddBook.css';
 
 const AddBook = () => {
@@ -7,7 +8,22 @@ const AddBook = () => {
   const [condition, setCondition] = useState('New');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [shelters, setShelters] = useState([]);
+  const [selectedShelter, setSelectedShelter] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchShelters = async () => {
+      const response = await fetch('/api/shelters');
+      if (response.ok) {
+        const data = await response.json();
+        setShelters(data);
+      } else {
+        console.error('Failed to fetch shelters');
+      }
+    };
+    fetchShelters();
+  }, []);
 
   const fetchBookDetails = async (isbn) => {
     const apiKey = process.env.REACT_APP_BOOK_API_KEY;
@@ -42,11 +58,15 @@ const AddBook = () => {
         return;
       }
 
-      // Sanitize book details
+      if (!selectedShelter) {
+        setError('Please select a shelter location.');
+        return;
+      }
+
       const sanitizedDetails = {
         title: sanitize(bookDetails.title),
         author: sanitize(bookDetails.author),
-        genre: sanitize(bookDetails.genre)
+        genre: sanitize(bookDetails.genre),
       };
 
       const response = await fetch('/api/books', {
@@ -54,7 +74,12 @@ const AddBook = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ isbn, condition, ...sanitizedDetails }),
+        body: JSON.stringify({
+          isbn,
+          condition,
+          ...sanitizedDetails,
+          shelter_id: selectedShelter.id,
+        }),
       });
       if (response.ok) {
         setSuccess(true);
@@ -65,6 +90,10 @@ const AddBook = () => {
         console.error('Failed to add book');
       }
     }
+  };
+
+  const handleMarkerClick = (shelter) => {
+    setSelectedShelter(shelter);
   };
 
   return (
@@ -96,6 +125,35 @@ const AddBook = () => {
             <option value="Rough">Rough</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="shelter">Select Shelter Location:</label>
+          <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+            <Map
+              className="map-container"
+              initialViewState={{
+                longitude: 0,
+                latitude: 0,
+                zoom: 2,
+              }}
+              style={{ width: '100%', height: '400px' }}
+            >
+              {shelters.map((shelter) => {
+                const lat = shelter.pin_coord.x;
+                const lng = shelter.pin_coord.y;
+                return (
+                  <Marker
+                    key={shelter.id}
+                    position={{ lat, lng }}
+                    onClick={() => handleMarkerClick(shelter)}
+                  />
+                );
+              })}
+            </Map>
+          </APIProvider>
+          {selectedShelter && (
+            <p>Selected Shelter: {selectedShelter.street_name}, {selectedShelter.city}</p>
+          )}
+        </div>
         <button type="submit">Add Book</button>
       </form>
       {success && <div className="alert alert-success" role="alert">Book added successfully!</div>}
@@ -104,5 +162,9 @@ const AddBook = () => {
 };
 
 export default AddBook;
+
+
+
+
 
 
