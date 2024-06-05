@@ -11,7 +11,13 @@ const Search = () => {
       const response = await axios.post('/api/search', { title, author, genre, city });
       console.log("Search results:", response.data); // Log the result object
       if (response.data.found) { 
-        navigate("/searchresults", { state: { results: response.data.results } });
+        navigate("/searchresults", { state: { 
+          title,
+          author,
+          genre,
+          city,
+          results: response.data.results 
+        } });
       } else {
         alert("No results found");
       }

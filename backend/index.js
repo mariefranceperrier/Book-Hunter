@@ -174,7 +174,8 @@ app.post('/api/search', async (req, res) => {
           b.author, 
           b.genre, 
           b.barcode, 
-          b.shelter_id, 
+          b.shelter_id,
+          b.condition, 
           s.city, 
           ST_X(s.pin_coord::geometry) AS latitude, 
           ST_Y(s.pin_coord::geometry) AS longitude

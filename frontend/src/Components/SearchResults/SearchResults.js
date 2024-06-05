@@ -5,7 +5,7 @@ import './SearchResults.css';
 
 const SearchResults = () => {
   const location = useLocation();
-  const { results } = location.state;
+  const { title, author, genre, city, results } = location.state;
   const navigate = useNavigate();
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
 
@@ -24,6 +24,13 @@ const SearchResults = () => {
   return (
     <main className="search-results">
       <h1>Search Results</h1>
+      <div className="result">
+        <p><strong>Title:</strong> {title}</p>
+        <p><strong>Author:</strong> {author}</p>
+        <p><strong>Genre:</strong> {genre}</p>
+        <p><strong>City:</strong> {city}</p>
+      </div>
+
       <div className="map-container">
         <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
           <Map
