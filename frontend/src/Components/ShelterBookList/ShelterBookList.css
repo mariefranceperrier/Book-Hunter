@@ -42,8 +42,15 @@
   font-size: 0.7em;
 }
 
-.shelter-books h1 {
+.shelter-details {
+  font-size: 0.6em;
+  font-style: italic;
+  color: white;
   margin-bottom: 20px;
+}
+
+.shelter-books h1 {
+  margin-bottom: 5px;
   font-size: 1.2em;
 }
 

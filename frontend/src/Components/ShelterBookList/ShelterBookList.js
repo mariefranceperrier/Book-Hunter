@@ -1,12 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './ShelterBookList.css';
 
 const ShelterBookList = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const [shelterDetails, setShelterDetails] = useState(null); 
   const [books, setBooks] = useState([]);
   const [imagesFetched, setImagesFetched] = useState(false);
+
+  
+ useEffect(() => {
+    const fetchShelterDetails = async () => {
+      try {
+        const response = await axios.get(`/api/shelters/${id}/details`);
+        setShelterDetails(response.data); 
+      } catch (error) {
+        console.error('Error fetching shelter details:', error);
+      }
+    };
+
+    fetchShelterDetails();
+  }, [id]);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -52,9 +68,15 @@ const ShelterBookList = () => {
     }
   }, [books, imagesFetched]);
 
+  
   return (
     <main className="shelter-books">
       <h1>Books in this Shelter</h1>
+      {shelterDetails && (
+        <div className="shelter-details">
+          <p><strong>Address:</strong> {shelterDetails.civic_number} {shelterDetails.street_name}, {shelterDetails.city}</p>
+        </div>
+      )}
       <div className="book-list">
         {books.map((book, index) => (
           <Link to={`/books/${book.id}`} key={index} className="book-link">

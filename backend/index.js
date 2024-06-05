@@ -176,6 +176,8 @@ app.post('/api/search', async (req, res) => {
           b.barcode, 
           b.shelter_id,
           b.condition, 
+          s.civic_number,
+          s.street_name,
           s.city, 
           ST_X(s.pin_coord::geometry) AS latitude, 
           ST_Y(s.pin_coord::geometry) AS longitude
@@ -206,6 +208,23 @@ app.post('/api/search', async (req, res) => {
       console.error(err);
       res.status(500).send(err);
   }
+});
+
+
+// Endpoint to get shelter details by ID
+app.get('/api/shelters/:id/details', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM shelters WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: 'Shelter not found' });
+            return;
+        }
+        res.json(result.rows[0]); 
+    } catch (error) {
+        console.error('Error fetching shelter details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 

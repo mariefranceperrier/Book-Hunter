@@ -17,8 +17,8 @@ const SearchResults = () => {
     }
   }, [results]);
 
-  const handleViewShelter = (shelterId) => {
-    navigate(`/shelter/${shelterId}`);
+  const handleViewShelter = (result) => {
+    navigate(`/shelter/${result.shelter_id}`, { state: { shelter: result } });
   };
 
   return (
@@ -44,7 +44,7 @@ const SearchResults = () => {
               <Marker
                 key={index}
                 position={{ lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }}
-                onClick={() => handleViewShelter(result.shelter_id)}
+                onClick={() => handleViewShelter(result)}
               />
             ))}
           </Map>
