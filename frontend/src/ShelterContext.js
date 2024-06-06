@@ -23,7 +23,7 @@ export const ShelterProvider = ({ children }) => {
   }, [fetchShelters]);
 
   return (
-    <ShelterContext.Provider value={{ shelters, handleShelterAdded }}>
+    <ShelterContext.Provider value={{ shelters, handleShelterAdded, fetchShelters }}>
       {children}
     </ShelterContext.Provider>
   );
