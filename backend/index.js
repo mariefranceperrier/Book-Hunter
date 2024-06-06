@@ -56,7 +56,17 @@ const createShelter = async (civicNumber, streetName, city, pinCoord, picture) =
 app.get('/api/shelters', async (req, res) => {
   try {
     const { city } = req.query;
-    let query = 'SELECT * FROM shelters';
+    let query = `
+      SELECT 
+        id, 
+        civic_number, 
+        street_name, 
+        city, 
+        ST_X(pin_coord::geometry) AS latitude, 
+        ST_Y(pin_coord::geometry) AS longitude, 
+        picture
+      FROM shelters
+    `;
     let values = [];
     if (city) {
       query += ' WHERE city ILIKE $1';
