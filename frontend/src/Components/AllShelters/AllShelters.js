@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
-import  { useShelters } from '../../ShelterContext';
 import './AllShelters.css';
-
 
 const PoiMarkers = ({ pois }) => {
   const map = useMap();
@@ -42,54 +40,49 @@ PoiMarkers.propTypes = {
 };
 
 const AllShelters = () => {
-  const { shelters, fetchShelters } = useShelters();
+  const [shelters, setShelters] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
   const [map, setMap] = useState(null);
 
   useEffect(() => {
-    const fetchInitialLocations = async () => {
+    const fetchShelters = async () => {
       try {
-        await fetchShelters();
-        const data = shelters.map((shelter, index) => {
-          let coords;
-          if (typeof shelter.pin_coord === 'string') {
-            coords = shelter.pin_coord
-              .replace(/[()]/g, '')
-              .split(',')
-              .map(coord => parseFloat(coord.trim()));
-          } else if (Array.isArray(shelter.pin_coord)) {
-            coords = shelter.pin_coord;
-          } else if (typeof shelter.pin_coord === 'object' && shelter.pin_coord !== null) {
-            coords = [shelter.pin_coord.x, shelter.pin_coord.y];
-          } else {
-            console.error('Unknown format for pin_coord:', shelter.pin_coord);
-            return null;
-          }
-
-          if (coords.length === 2) {
-            return {
-              key: `shelterID${index + 1}`,
-              location: {
-                lat: coords[0],
-                lng: coords[1],
-              },
-            };
-          }
-          return null;
-        }).filter(shelter => shelter !== null);
-        setLocations(data);
+        const response = await axios.get('/api/shelters');
+        if (response.status === 200) {
+          setShelters(response.data);
+        } else {
+          console.error('Failed to fetch shelters');
+        }
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error('Error fetching shelters:', error);
       }
     };
 
-    fetchInitialLocations();
-  }, [shelters, fetchShelters]);
+    fetchShelters();
+  }, []);
+
+  useEffect(() => {
+    const formatShelters = () => {
+      const formattedData = shelters.map((shelter, index) => {
+        return {
+          key: `shelterID${index + 1}`,
+          location: {
+            lat: parseFloat(shelter.latitude),
+            lng: parseFloat(shelter.longitude),
+          },
+        };
+      }).filter(shelter => shelter.location.lat && shelter.location.lng);
+      setLocations(formattedData);
+    };
+
+    formatShelters();
+  }, [shelters]);
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
+    debounceFetchLocations(e.target.value);
   };
 
   const fetchCityCoordinates = async (city) => {
@@ -112,18 +105,18 @@ const AllShelters = () => {
     }
   };
 
-  const fetchLocations = async () => {
+  const fetchLocations = async (city) => {
     try {
       let data;
-      if (selectedCity) {
-        const cityCoordinates = await fetchCityCoordinates(selectedCity);
+      if (city) {
+        const cityCoordinates = await fetchCityCoordinates(city);
         if (cityCoordinates) {
           setMapCenter({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
           if (map) {
             map.panTo({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
           }
         }
-        const response = await axios.get(`/api/shelters?city=${selectedCity}`);
+        const response = await axios.get(`/api/shelters?city=${city}`);
         data = response.data;
       } else {
         const response = await axios.get(`/api/shelters`);
@@ -131,32 +124,14 @@ const AllShelters = () => {
       }
 
       const formattedData = data.map((shelter, index) => {
-        let coords;
-        if (typeof shelter.pin_coord === 'string') {
-          coords = shelter.pin_coord
-            .replace(/[()]/g, '') 
-            .split(',') 
-            .map(coord => parseFloat(coord.trim()));
-        } else if (Array.isArray(shelter.pin_coord)) {
-          coords = shelter.pin_coord;
-        } else if (typeof shelter.pin_coord === 'object' && shelter.pin_coord !== null) {
-          coords = [shelter.pin_coord.x, shelter.pin_coord.y];
-        } else {
-          console.error('Unknown format for pin_coord:', shelter.pin_coord);
-          return null;
-        }
-
-        if (coords.length === 2) {
-          return {
-            key: `shelterID${index + 1}`,
-            location: {
-              lat: coords[0],
-              lng: coords[1],
-            },
-          };
-        }
-        return null;
-      }).filter(shelter => shelter !== null);
+        return {
+          key: `shelterID${index + 1}`,
+          location: {
+            lat: parseFloat(shelter.latitude),
+            lng: parseFloat(shelter.longitude),
+          },
+        };
+      }).filter(shelter => shelter.location.lat && shelter.location.lng);
 
       setLocations(formattedData);
     } catch (error) {
@@ -164,10 +139,21 @@ const AllShelters = () => {
     }
   };
 
-  useEffect(() => {
-    fetchLocations();
-  }, [selectedCity]);
- 
+  // Custom debounce function
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const debounceFetchLocations = useCallback(debounce(fetchLocations, 500), []);
+
   return (
     <div className="all-shelters-container">
       <div className="search-container">
@@ -177,13 +163,13 @@ const AllShelters = () => {
           value={selectedCity}
           onChange={handleCityChange}
         />
-        <button onClick={fetchLocations}>Search</button>
+        <button onClick={() => fetchLocations(selectedCity)}>Search</button>
       </div>
       <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
         <Map
           className="map-container"
           defaultZoom={13}
-          defaultCenter={mapCenter}
+          center={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onLoad={mapInstance => setMap(mapInstance)}
           scrollwheel={true}
