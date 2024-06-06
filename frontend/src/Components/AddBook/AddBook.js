@@ -41,7 +41,6 @@ const AddBook = () => {
     }
   }, []);
 
-
   const fetchBookDetails = async (isbn) => {
     const apiKey = process.env.REACT_APP_BOOK_API_KEY;
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${apiKey}`);
@@ -152,17 +151,13 @@ const AddBook = () => {
               style={{ width: '100%', height: '400px' }}
               scrollwheel={true}
             >
-              {shelters.map((shelter) => {
-                const lat = shelter.pin_coord.x;
-                const lng = shelter.pin_coord.y;
-                return (
-                  <Marker
-                    key={shelter.id}
-                    position={{ lat, lng }}
-                    onClick={() => handleMarkerClick(shelter)}
-                  />
-                );
-              })}
+              {shelters.map((shelter, index) => (
+                <Marker
+                  key={index}
+                  position={{ lat: parseFloat(shelter.latitude), lng: parseFloat(shelter.longitude) }}
+                  onClick={() => handleMarkerClick(shelter)}
+                />
+              ))}
             </Map>
           </APIProvider>
           {selectedShelter && (
@@ -177,6 +172,8 @@ const AddBook = () => {
 };
 
 export default AddBook;
+
+
 
 
 

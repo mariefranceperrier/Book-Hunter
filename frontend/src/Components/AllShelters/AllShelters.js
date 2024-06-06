@@ -183,7 +183,7 @@ const AllShelters = () => {
         <Map
           className="map-container"
           defaultZoom={13}
-          center={mapCenter}
+          defaultCenter={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onLoad={mapInstance => setMap(mapInstance)}
           scrollwheel={true}
