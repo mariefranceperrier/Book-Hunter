@@ -19,36 +19,34 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Utility function to get geocode for an address
 const getGeocode = async (address) => {
-    try {
-        const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-            params: {
-                address: address,
-                key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
-            }
-        });
-        if (response.data.results && response.data.results.length > 0) {
-            return response.data.results[0].geometry.location;
-        }
-        throw new Error('No results found');
-    } catch (error) {
-        console.error('Error fetching geocode:', error);
-        throw error;
-    }
+  try {
+      const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+          params: {
+              address: address,
+              key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+          }
+      });
+      if (response.data.results && response.data.results.length > 0) {
+          return response.data.results[0].geometry.location;
+      }
+      throw new Error('No results found');
+  } catch (error) {
+      console.error('Error fetching geocode:', error);
+      throw error;
+  }
 };
-
 
 // Function to create a new shelter with coordinates
 const createShelter = async (civicNumber, streetName, city, pinCoord, picture) => {
   const client = await pool.connect();
   try {
-    const result = await client.query(
-      `INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture)
-       VALUES ($1, $2, $3, ST_GeomFromText($4, 4326), $5) RETURNING *`,
-      [civicNumber, streetName, city, `POINT(${pinCoord.lng} ${pinCoord.lat})`, picture]
-    );
-    return result.rows[0];
+      const result = await client.query(
+          'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, ST_SetSRID(ST_MakePoint($4, $5), 4326), $6) RETURNING *',
+          [civicNumber, streetName, city, pinCoord.lng, pinCoord.lat, picture]
+      );
+      return result.rows[0];
   } finally {
-    client.release();
+      client.release();
   }
 };
 
@@ -62,8 +60,8 @@ app.get('/api/shelters', async (req, res) => {
         civic_number, 
         street_name, 
         city, 
-        ST_X(pin_coord::geometry) AS latitude, 
-        ST_Y(pin_coord::geometry) AS longitude, 
+        ST_Y(pin_coord::geometry) AS latitude, 
+        ST_X(pin_coord::geometry) AS longitude, 
         picture
       FROM shelters
     `;
@@ -89,7 +87,7 @@ app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     const address = `${civic_number} ${street_name}, ${city}`;
     const geocode = await getGeocode(address);
     const shelter = await createShelter(civic_number, street_name, city, geocode, picture);
-    res.status(201).json(shelter);
+    res.status(201).json({ ...shelter, latitude: geocode.lat, longitude: geocode.lng });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
