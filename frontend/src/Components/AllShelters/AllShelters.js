@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
@@ -47,8 +47,9 @@ const AllShelters = () => {
   const [shelters, setShelters] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
-  const [map, setMap] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mapKey, setMapKey] = useState(1); // State to control map re-render
+  const mapRef = useRef(null); // Ref for map instance
 
   useEffect(() => {
     const fetchShelters = async () => {
@@ -99,7 +100,12 @@ const AllShelters = () => {
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
-    debounceFetchLocations(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      fetchLocations(selectedCity);
+    }
   };
 
   const fetchCityCoordinates = async (city) => {
@@ -124,21 +130,14 @@ const AllShelters = () => {
 
   const fetchLocations = async (city) => {
     try {
-      let data;
-      if (city) {
-        const cityCoordinates = await fetchCityCoordinates(city);
-        if (cityCoordinates) {
-          setMapCenter({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
-          if (map) {
-            map.panTo({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
-          }
-        }
-        const response = await axios.get(`/api/shelters?city=${city}`);
-        data = response.data;
-      } else {
-        const response = await axios.get(`/api/shelters`);
-        data = response.data;
+      const cityCoordinates = await fetchCityCoordinates(city);
+      if (cityCoordinates) {
+        setMapCenter({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
+        setMapKey(prevKey => prevKey + 1); // Update map key to force re-render
       }
+
+      const response = await axios.get(city ? `/api/shelters?city=${city}` : '/api/shelters');
+      const data = response.data;
 
       const formattedData = data.map((shelter, index) => {
         return {
@@ -157,21 +156,6 @@ const AllShelters = () => {
     }
   };
 
-  // Custom debounce function
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  };
-
-  const debounceFetchLocations = useCallback(debounce(fetchLocations, 500), []);
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -188,17 +172,21 @@ const AllShelters = () => {
           placeholder="Enter city name..."
           value={selectedCity}
           onChange={handleCityChange}
+          onKeyPress={handleKeyPress}
         />
         <button onClick={() => fetchLocations(selectedCity)}>Search</button>
       </div>
       <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
         <Map
+          key={mapKey}
           className="map-container"
           defaultZoom={13}
           defaultCenter={mapCenter}
-          mapID='e187bd2cd82b5d4f'
-          onLoad={mapInstance => setMap(mapInstance)}
+          onLoad={mapInstance => {
+            mapRef.current = mapInstance;
+          }}
           scrollwheel={true}
+          disableDefaultUI={true}
         >
           <PoiMarkers pois={locations} />
         </Map>
