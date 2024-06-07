@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
+import { useLocation } from 'react-router-dom';
 import './AllShelters.css';
+import { useMapCenter } from '../../MapCenterContext';
 
 const PoiMarkers = ({ pois }) => {
   const map = useMap();
@@ -40,11 +42,13 @@ PoiMarkers.propTypes = {
 };
 
 const AllShelters = () => {
+  const location = useLocation();
+  const { mapCenter, setMapCenter } = useMapCenter();
   const [shelters, setShelters] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
-  const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
   const [map, setMap] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchShelters = async () => {
@@ -69,16 +73,29 @@ const AllShelters = () => {
         return {
           key: `shelterID${index + 1}`,
           location: {
-            lat: parseFloat(shelter.latitude),
-            lng: parseFloat(shelter.longitude),
+            lat: parseFloat(shelter.longitude),
+            lng: parseFloat(shelter.latitude),
           },
         };
-      }).filter(shelter => shelter.location.lat && shelter.location.lng);
+      }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
       setLocations(formattedData);
+      setLoading(false);
     };
 
     formatShelters();
   }, [shelters]);
+
+  useEffect(() => {
+    if (location.state && location.state.center) {
+      const center = {
+        lat: parseFloat(location.state.center.lat),
+        lng: parseFloat(location.state.center.lng),
+      };
+      if (!isNaN(center.lat) && !isNaN(center.lng)) {
+        setMapCenter(center);
+      }
+    }
+  }, [location.state, setMapCenter]);
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
@@ -127,15 +144,16 @@ const AllShelters = () => {
         return {
           key: `shelterID${index + 1}`,
           location: {
-            lat: parseFloat(shelter.latitude),
-            lng: parseFloat(shelter.longitude),
+            lat: parseFloat(shelter.longitude),
+            lng: parseFloat(shelter.latitude),
           },
         };
-      }).filter(shelter => shelter.location.lat && shelter.location.lng);
-
+      }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
       setLocations(formattedData);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setLoading(false);
     }
   };
 
@@ -154,6 +172,14 @@ const AllShelters = () => {
 
   const debounceFetchLocations = useCallback(debounce(fetchLocations, 500), []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!mapCenter || isNaN(mapCenter.lat) || isNaN(mapCenter.lng)) {
+    return <div>Invalid map center coordinates</div>;
+  }
+
   return (
     <div className="all-shelters-container">
       <div className="search-container">
@@ -169,7 +195,7 @@ const AllShelters = () => {
         <Map
           className="map-container"
           defaultZoom={13}
-          center={mapCenter}
+          defaultCenter={mapCenter}
           mapID='e187bd2cd82b5d4f'
           onLoad={mapInstance => setMap(mapInstance)}
           scrollwheel={true}

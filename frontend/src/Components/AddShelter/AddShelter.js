@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddShelter.css';
 import { useShelters } from '../../ShelterContext';
+import { useMapCenter } from '../../MapCenterContext';
 
 const AddShelter = () => {
     const [civicNumber, setCivicNumber] = useState('');
@@ -12,6 +13,7 @@ const AddShelter = () => {
 
     const { handleShelterAdded } = useShelters();
     const navigate = useNavigate();
+    const { setMapCenter } = useMapCenter();
 
     const validateCivicNumber = (value) => {
         return /^\d+$/.test(value);
@@ -25,42 +27,54 @@ const AddShelter = () => {
         return /^[A-Za-z\s]+$/.test(value) && value.length <= 50;
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (!validateCivicNumber(civicNumber)) {
-            setError('Civic number must be a valid number.');
-        } else if (!validateStreetName(streetName)) {
-            setError('Street name must contain only letters, numbers, and spaces, and be less than 50 characters.');
-        } else if (!validateCityName(city)) {
-            setError('City name must contain only letters and spaces, and be less than 50 characters.');
-        } else {
-            setError('');
-            const formData = new FormData();
-            formData.append('civic_number', civicNumber);
-            formData.append('street_name', streetName);
-            formData.append('city', city);
-            if (picture) {
-                formData.append('picture', picture);
-            }
-
-            try {
-                const response = await fetch('/api/shelters', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (response.ok) {
-                    console.log('Shelter added successfully');
-                    handleShelterAdded();
-                    navigate('/allshelters');
-                } else {
-                    console.error('Failed to add shelter');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!validateCivicNumber(civicNumber)) {
+        setError('Civic number must be a valid number.');
+    } else if (!validateStreetName(streetName)) {
+        setError('Street name must contain only letters, numbers, and spaces, and be less than 50 characters.');
+    } else if (!validateCityName(city)) {
+        setError('City name must contain only letters and spaces, and be less than 50 characters.');
+    } else {
+        setError('');
+        const formData = new FormData();
+        formData.append('civic_number', civicNumber);
+        formData.append('street_name', streetName);
+        formData.append('city', city);
+        if (picture) {
+            formData.append('picture', picture);
         }
-    };
+
+        try {
+            const response = await fetch('/api/shelters', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const shelter = await response.json();
+                console.log('Shelter added successfully', shelter);
+
+                // Extract latitude and longitude
+                const latitude = parseFloat(shelter.latitude);
+                const longitude = parseFloat(shelter.longitude);
+
+                // Validate the coordinates
+                if (!isNaN(latitude) && !isNaN(longitude)) {
+                    const center = { lat: latitude, lng: longitude };
+                    setMapCenter(center);
+                    navigate('/allshelters', { state: { center } });
+                } else {
+                    console.error('Invalid coordinates received from API');
+                }
+            } else {
+                console.error('Failed to add shelter');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+};
 
     const handleFileChange = (event) => {
         setPicture(event.target.files[0]);
