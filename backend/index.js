@@ -42,15 +42,15 @@ const createShelter = async (civicNumber, streetName, city, pinCoord, picture) =
   const client = await pool.connect();
   try {
     const result = await client.query(
-      'INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [civicNumber, streetName, city, pinCoord, picture]
+      `INSERT INTO shelters (civic_number, street_name, city, pin_coord, picture)
+       VALUES ($1, $2, $3, ST_GeomFromText($4, 4326), $5) RETURNING *`,
+      [civicNumber, streetName, city, `POINT(${pinCoord.lng} ${pinCoord.lat})`, picture]
     );
     return result.rows[0];
   } finally {
     client.release();
   }
 };
-
 
 // Endpoint to get shelters
 app.get('/api/shelters', async (req, res) => {
@@ -88,15 +88,13 @@ app.post('/api/shelters', upload.single('picture'), async (req, res) => {
     const picture = req.file ? req.file.buffer : null;
     const address = `${civic_number} ${street_name}, ${city}`;
     const geocode = await getGeocode(address);
-    const pinCoord = `(${geocode.lat}, ${geocode.lng})`;
-    const shelter = await createShelter(civic_number, street_name, city, pinCoord, picture);
+    const shelter = await createShelter(civic_number, street_name, city, geocode, picture);
     res.status(201).json(shelter);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // Book-related endpoints and functions
 const getBookById = async (id) => {
