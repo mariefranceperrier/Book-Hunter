@@ -48,8 +48,8 @@ const AllShelters = () => {
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [loading, setLoading] = useState(true);
-  const [mapKey, setMapKey] = useState(1); // State to control map re-render
-  const mapRef = useRef(null); // Ref for map instance
+  const [mapKey, setMapKey] = useState(1);
+  const mapRef = useRef(null);
 
   useEffect(() => {
     const fetchShelters = async () => {
@@ -74,8 +74,8 @@ const AllShelters = () => {
         return {
           key: `shelterID${index + 1}`,
           location: {
-            lat: parseFloat(shelter.longitude),
-            lng: parseFloat(shelter.latitude),
+            lat: parseFloat(shelter.latitude),
+            lng: parseFloat(shelter.longitude),
           },
         };
       }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
@@ -95,6 +95,15 @@ const AllShelters = () => {
       if (!isNaN(center.lat) && !isNaN(center.lng)) {
         setMapCenter(center);
       }
+    } else if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+        }
+      );
     }
   }, [location.state, setMapCenter]);
 
@@ -133,7 +142,7 @@ const AllShelters = () => {
       const cityCoordinates = await fetchCityCoordinates(city);
       if (cityCoordinates) {
         setMapCenter({ lat: cityCoordinates.lat, lng: cityCoordinates.lng });
-        setMapKey(prevKey => prevKey + 1); // Update map key to force re-render
+        setMapKey(prevKey => prevKey + 1);
       }
 
       const response = await axios.get(city ? `/api/shelters?city=${city}` : '/api/shelters');
@@ -143,8 +152,8 @@ const AllShelters = () => {
         return {
           key: `shelterID${index + 1}`,
           location: {
-            lat: parseFloat(shelter.longitude),
-            lng: parseFloat(shelter.latitude),
+            lat: parseFloat(shelter.latitude),
+            lng: parseFloat(shelter.longitude),
           },
         };
       }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
@@ -176,7 +185,7 @@ const AllShelters = () => {
         />
         <button onClick={() => fetchLocations(selectedCity)}>Search</button>
       </div>
-      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <Map
           key={mapKey}
           className="map-container"

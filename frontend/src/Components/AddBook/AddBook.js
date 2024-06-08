@@ -20,7 +20,6 @@ const AddBook = () => {
         const response = await fetch('/api/shelters');
         if (response.ok) {
           const data = await response.json();
-          console.log('Fetched shelters:', data);
           setShelters(data);
         } else {
           console.error('Failed to fetch shelters');
@@ -121,8 +120,8 @@ const AddBook = () => {
       return {
         key: `shelterID${index + 1}`,
         location: {
-          lat: parseFloat(shelter.latitude), // Ensure latitude is assigned to lat
-          lng: parseFloat(shelter.longitude), // Ensure longitude is assigned to lng
+          lat: parseFloat(shelter.latitude),
+          lng: parseFloat(shelter.longitude),
         },
         ...shelter
       };
@@ -173,6 +172,7 @@ const AddBook = () => {
                 mapRef.current = mapInstance;
               }}
               scrollwheel={true}
+              disableDefaultUI={true}
             >
               {formattedShelters.map((shelter) => (
                 <Marker
