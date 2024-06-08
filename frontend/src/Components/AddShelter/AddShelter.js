@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddShelter.css';
-import { useShelters } from '../../ShelterContext';
 import { useMapCenter } from '../../MapCenterContext';
 
 const AddShelter = () => {
@@ -11,7 +10,6 @@ const AddShelter = () => {
     const [picture, setPicture] = useState(null);
     const [error, setError] = useState('');
 
-    const { handleShelterAdded } = useShelters();
     const navigate = useNavigate();
     const { setMapCenter } = useMapCenter();
 
