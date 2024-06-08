@@ -10,6 +10,7 @@ const SearchResults = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
 
   useEffect(() => {
+    console.log('Search results:', results);
     if (results.length > 0) {
       const averageLat = results.reduce((sum, result) => sum + parseFloat(result.latitude), 0) / results.length;
       const averageLng = results.reduce((sum, result) => sum + parseFloat(result.longitude), 0) / results.length;
@@ -20,6 +21,21 @@ const SearchResults = () => {
   const handleViewShelter = (result) => {
     navigate(`/shelter/${result.shelter_id}`, { state: { shelter: result } });
   };
+
+  const formatResults = (results) => {
+    return results.map((result, index) => {
+      return {
+        key: `resultID${index + 1}`,
+        location: {
+          lat: parseFloat(result.latitude),
+          lng: parseFloat(result.longitude),
+        },
+        ...result
+      };
+    }).filter(result => !isNaN(result.location.lat) && !isNaN(result.location.lng));
+  };
+
+  const formattedResults = formatResults(results);
 
   return (
     <main className="search-results">
@@ -39,11 +55,12 @@ const SearchResults = () => {
             center={mapCenter}
             style={{ width: '100%', height: '400px' }}
             scrollwheel={true}
+            disableDefaultUI={true}
           >
-            {results.map((result, index) => (
+            {formattedResults.map((result) => (
               <Marker
-                key={index}
-                position={{ lat: parseFloat(result.latitude), lng: parseFloat(result.longitude) }}
+                key={result.key}
+                position={{ lat: result.location.lat, lng: result.location.lng }}
                 onClick={() => handleViewShelter(result)}
               />
             ))}

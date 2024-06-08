@@ -185,8 +185,8 @@ app.post('/api/search', async (req, res) => {
           s.civic_number,
           s.street_name,
           s.city, 
-          ST_X(s.pin_coord::geometry) AS latitude, 
-          ST_Y(s.pin_coord::geometry) AS longitude
+          ST_Y(s.pin_coord::geometry) AS latitude, 
+          ST_X(s.pin_coord::geometry) AS longitude
       FROM books b
       JOIN shelters s ON b.shelter_id = s.id
       WHERE 
