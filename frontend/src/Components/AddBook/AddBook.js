@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Map, Marker, APIProvider } from '@vis.gl/react-google-maps';
 import './AddBook.css';
@@ -12,15 +12,21 @@ const AddBook = () => {
   const [selectedShelter, setSelectedShelter] = useState(null);
   const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
   const navigate = useNavigate();
+  const mapRef = useRef(null);
 
   useEffect(() => {
     const fetchShelters = async () => {
-      const response = await fetch('/api/shelters');
-      if (response.ok) {
-        const data = await response.json();
-        setShelters(data);
-      } else {
-        console.error('Failed to fetch shelters');
+      try {
+        const response = await fetch('/api/shelters');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Fetched shelters:', data);
+          setShelters(data);
+        } else {
+          console.error('Failed to fetch shelters');
+        }
+      } catch (error) {
+        console.error('Error fetching shelters:', error);
       }
     };
     fetchShelters();
@@ -30,12 +36,10 @@ const AddBook = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // If geolocation is available, set the map center to the user's location
           setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
         },
         (error) => {
           console.error('Error getting geolocation:', error);
-          // If geolocation is not available, the map center remains the same
         }
       );
     }
@@ -112,6 +116,23 @@ const AddBook = () => {
     setSelectedShelter(shelter);
   };
 
+  const formatShelters = (shelters) => {
+    return shelters.map((shelter, index) => {
+      return {
+        key: `shelterID${index + 1}`,
+        location: {
+          lat: parseFloat(shelter.latitude), // Ensure latitude is assigned to lat
+          lng: parseFloat(shelter.longitude), // Ensure longitude is assigned to lng
+        },
+        ...shelter
+      };
+    }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
+  };
+
+  const formattedShelters = formatShelters(shelters);
+
+  console.log('Formatted shelters:', formattedShelters);
+
   return (
     <>
       <h2>Thank you for your donation!</h2>
@@ -148,13 +169,15 @@ const AddBook = () => {
               className="map-container"
               defaultZoom={13}
               defaultCenter={mapCenter}
-              style={{ width: '100%', height: '400px' }}
+              onLoad={(mapInstance) => {
+                mapRef.current = mapInstance;
+              }}
               scrollwheel={true}
             >
-              {shelters.map((shelter, index) => (
+              {formattedShelters.map((shelter) => (
                 <Marker
-                  key={index}
-                  position={{ lat: parseFloat(shelter.latitude), lng: parseFloat(shelter.longitude) }}
+                  key={shelter.key}
+                  position={shelter.location}
                   onClick={() => handleMarkerClick(shelter)}
                 />
               ))}
@@ -172,11 +195,3 @@ const AddBook = () => {
 };
 
 export default AddBook;
-
-
-
-
-
-
-
-
