@@ -34,7 +34,7 @@
 }
 
 .map-container {
-  width: 70%;
+  max-width: 60%;
   height: 80%;
   border: 1px solid #ccc;
   border-radius: 5px;
