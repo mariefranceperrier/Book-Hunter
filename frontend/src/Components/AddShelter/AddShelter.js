@@ -123,6 +123,12 @@ const handleSubmit = async (event) => {
                 </div>
                 {error && <p className="error">{error}</p>}
                 <button type="submit">Add Shelter</button>
+                <img src="/ShelterImg.jpeg" alt="Image of a book shelter"/>
+                
+                {/* <video width="100%" height="auto" controls>
+                <source src="/HomePageAnimation.mov" type="video/quicktime" />
+                Your browser does not support the video tag.
+                </video> */}
             </form>
         </>
     );

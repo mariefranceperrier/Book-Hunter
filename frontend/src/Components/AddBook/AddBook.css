@@ -23,7 +23,15 @@ label {
   font-weight: bold;
 }
 
-input, select, button {
+input {
+  width: 96%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  }
+
+select, button {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;

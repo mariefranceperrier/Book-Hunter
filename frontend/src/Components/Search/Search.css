@@ -2,6 +2,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-image: url("/public/BookMarker.jpeg");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat; 
+  height: 87vh; 
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.search h1,
+.search h2,
+.search form {
+  background: rgba(255, 255, 255, 0.8); 
+  padding: 20px;  
+  border-radius: 10px;  
+  width: 100%; 
+  max-width: 600px;  
+  text-align: center;  
 }
 
 .search h1 {
@@ -13,7 +31,7 @@
 .search h2 {
   color: #6b8e23;
   font-size: 1.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .search form {
@@ -46,4 +64,3 @@
 .search button:hover {
   background-color: #556b2f;
 }
-

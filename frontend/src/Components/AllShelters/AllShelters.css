@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 85vh;
   background-color: rgb(208, 223, 177);
   padding: 10px;
 }
@@ -10,7 +10,8 @@
 .search-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-top: 20px;
 }
 
 .search-container input {
@@ -39,4 +40,10 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   overflow: hidden;
+}
+
+.all-shelters-container video {
+  width: 30%;
+  margin-bottom: 15px;
+  border-radius: 10px;
 }
