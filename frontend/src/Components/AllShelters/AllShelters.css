@@ -10,7 +10,7 @@
 .search-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 30px;
   margin-top: 20px;
 }
 
@@ -76,10 +76,4 @@
   color: inherit;
   background: none;
   border: none !important;
-}
-
-.all-shelters-container video {
-  width: 30%;
-  margin-bottom: 15px;
-  border-radius: 10px;
 }

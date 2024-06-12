@@ -41,10 +41,10 @@ const SearchResults = () => {
     <main className="search-results">
       <h1>Search Results</h1>
       <div className="result">
-        <p><strong>Title:</strong> {title}</p>
-        <p><strong>Author:</strong> {author}</p>
-        <p><strong>Genre:</strong> {genre}</p>
-        <p><strong>City:</strong> {city}</p>
+        <p><strong>Title:</strong><span className="data"> {title}</span></p>
+        <p><strong>Author:</strong><span className="data"> {author}</span></p>
+        <p><strong>Genre:</strong><span className="data"> {genre}</span></p>
+        <p><strong>City:</strong><span className="data"> {city}</span></p>
       </div>
 
       <div className="map-container-search">

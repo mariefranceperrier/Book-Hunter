@@ -255,12 +255,6 @@ const AllShelters = () => {
           )}
         </Map>
       </APIProvider>
-
-      <video controls autoplay muted>
-        <source src="/ShelterAnimation.mov" type="video/quicktime" />
-        Your browser does not support the video tag.
-      </video>
-
     </div>
   );
 };

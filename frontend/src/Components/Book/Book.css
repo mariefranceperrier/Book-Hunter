@@ -2,13 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(208, 223, 177);
+  background-color: rgb(245, 245, 209);
   padding: 20px;
   border-radius: 10px;
   max-width: 600px;
   margin: 0 auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
+  margin-top:50px;
   font-family: 'Merriweather', sans-serif;
 }
 
@@ -23,11 +23,11 @@
 }
 
 .book-details .gotcha-button {
-  background-color: #800080;
+  background-color: rgb(184, 3, 3);
 }
 
 .book-details .gotcha-button:hover {
-  background-color: #660066;
+  background-color: rgb(132, 2, 2);
 }
 
 .book-details .checkin-button {

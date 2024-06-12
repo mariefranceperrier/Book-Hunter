@@ -24,7 +24,7 @@
   padding: 10px;
   border-radius: 5px;
   width: 200px;
-  background-color: rgba(189, 202, 160, 0.192);
+  background-color:rgb(245, 245, 209);
   transition: box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -50,6 +50,7 @@
 }
 
 .shelter-books h1 {
+  color: black;
   margin-bottom: 5px;
   font-size: 1.2em;
 }

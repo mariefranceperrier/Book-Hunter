@@ -45,7 +45,7 @@ input, select, button {
 }
 
 form img {
-  width: 33%;
-  margin: 20px 0 20px 15px;
+  width: 30%;
+  margin: 20px 0 20px 0;
   border-radius: 10px;
 }

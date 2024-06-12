@@ -83,9 +83,9 @@ const ShelterBookList = () => {
             <div className="book">
               <h2>{book.title}</h2>
               <img src={book.imageUrl} alt={book.title} />
-              <p>Author: {book.author}</p>
-              <p>Genre: {book.genre}</p>
-              <p>Condition: {book.condition}</p>
+              <p><strong>Author:</strong><span className="data"> {book.author}</span></p>
+              <p><strong>Genre:</strong><span className="data"> {book.genre}</span></p>
+              <p><strong>Condition:</strong><span className="data"> {book.condition}</span></p>
             </div>
           </Link>
         ))}
