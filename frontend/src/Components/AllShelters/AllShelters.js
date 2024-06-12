@@ -250,6 +250,12 @@ const AllShelters = () => {
                   alt="Shelter"
                 />
               )}
+              <button
+                  className="info-window-button"
+                  onClick={() => handleMarkerClick(hoveredShelter)}
+                >
+                  View Content
+              </button>
             </div>
           </InfoWindow>
           )}

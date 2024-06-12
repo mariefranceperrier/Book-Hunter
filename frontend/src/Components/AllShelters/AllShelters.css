@@ -77,3 +77,17 @@
   background: none;
   border: none !important;
 }
+
+.info-window-button {
+  padding: 5px;
+  background-color: royalblue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.info-window-button:hover {
+  background-color: rgb(49, 80, 171);
+}
