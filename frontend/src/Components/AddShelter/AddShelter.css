@@ -31,14 +31,15 @@ input, select, button {
   font-size: 1em;
 }
 
-button {
+.add-shelter-button {
   background-color: #6b8e23;
   color: white;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  max-width: 120px;
 }
 
-button:hover {
+.add-shelter-button:hover {
   background-color: #556b2f;
 }

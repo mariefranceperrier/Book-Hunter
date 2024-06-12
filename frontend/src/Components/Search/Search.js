@@ -44,7 +44,7 @@ const Search = () => {
         <input type="text" name="author" placeholder="Author" />
         <input type="text" name="genre" placeholder="Genre" />
         <input type="text" name="city" placeholder="City" />
-        <button type="submit">Search</button>
+        <button className="search-button" type="submit">Search</button>
       </form>
     </main>
   );

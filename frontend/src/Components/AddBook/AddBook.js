@@ -165,7 +165,7 @@ const AddBook = () => {
           <label htmlFor="shelter">Select Shelter Location:</label>
           <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
             <Map
-              className="map-container"
+              className="map-container-add-book"
               defaultZoom={13}
               defaultCenter={mapCenter}
               onLoad={(mapInstance) => {
@@ -187,7 +187,7 @@ const AddBook = () => {
             <p>Selected Shelter: {selectedShelter.street_name}, {selectedShelter.city}</p>
           )}
         </div>
-        <button type="submit">Add Book</button>
+        <button className="add-book-button" type="submit">Add Book</button>
       </form>
       {success && <div className="alert alert-success" role="alert">Book added successfully!</div>}
     </>
