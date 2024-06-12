@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Search.css';
+import Modal from '../Modal/Modal';
 
 const Search = () => {
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const searchBooks = async (title, author, genre, city) => {
@@ -35,6 +37,14 @@ const Search = () => {
     searchBooks(title, author, genre, city);
   };
 
+  const handleBookmarkClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <main className="search">
       <h1>CATCH ME IF YOU CAN</h1>
@@ -46,6 +56,14 @@ const Search = () => {
         <input type="text" name="city" placeholder="City" />
         <button className="search-button" type="submit">Search</button>
       </form>
+      <button className="bookmark" onClick={handleBookmarkClick}>OUR MISSION</button>
+      <Modal className='modal' show={showModal} handleClose={handleCloseModal}>
+        <h1>OUR MISSION</h1>
+        <p>Book Hunter is a community-driven platform dedicated to connecting book lovers and promoting literacy.</p>
+        <p> Our mission is to facilitate book discovery, foster a culture of sharing, and support local book shelters by enabling easy book donations.</p>
+        <p>We aim to expand access to books for all through our user-friendly search and donation services.</p>
+        <img src="/TakeLeaveBook.jpeg" alt="Take a Book Leave a Book"/>
+      </Modal>
     </main>
   );
 };

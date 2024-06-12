@@ -61,6 +61,27 @@
   cursor: pointer;
 }
 
-.searchbutton:hover {
+.search-button:hover {
   background-color: #556b2f;
+}
+
+.bookmark {
+  position: fixed;
+  bottom: 50px;
+  right: 55px;
+  transform: rotate(180deg);
+  transform-origin: right;
+  writing-mode: vertical-rl;
+  background-color: rgb(86, 120, 222);
+  color: white;
+  border: none; 
+  padding: 20px 10px 20px 0px;
+  cursor: pointer;
+  z-index: 1000;
+  border-radius: 5px;
+  font-size: 1.3rem;
+}
+
+.bookmark:hover {
+  background-color: rgb(56, 90, 202);
 }
