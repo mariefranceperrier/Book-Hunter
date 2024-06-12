@@ -65,9 +65,9 @@ const Book = () => {
     <main className="book-details">
       <button 
         onClick={toggleAvailability} 
-        className={book.is_available ? 'gotcha-button' : 'checkin-button'}
+        className={book.is_available ? 'gotcha-button' : 'checkedout-button'}
       >
-        {book.is_available ? 'Gotcha!' : 'Check In'}
+        {book.is_available ? 'Gotcha!' : 'Checked Out'}
       </button>
       <div className="book-info">
         <h2>{book.title}</h2>        

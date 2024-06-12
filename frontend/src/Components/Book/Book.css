@@ -30,13 +30,13 @@
   background-color: rgb(132, 2, 2);
 }
 
-.book-details .checkin-button {
-  background-color: #FFD700;
+.book-details .checkedout-button {
+  background-color: rgb(174, 174, 174);
   color: black;
 }
 
-.book-details .checkin-button:hover {
-  background-color: #FFC700;
+.book-details .checkedout-button:hover {
+  background-color:rgb(130, 130, 130);
 }
 
 .book-info {
