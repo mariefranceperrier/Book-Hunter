@@ -71,6 +71,13 @@
   padding: 0;
 }
 
+.close-button-info:hover {
+  font-weight: bold;
+  color: inherit;
+  background: none;
+  border: none !important;
+}
+
 .all-shelters-container video {
   width: 30%;
   margin-bottom: 15px;
