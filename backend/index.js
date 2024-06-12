@@ -136,12 +136,12 @@ const getBookById = async (id) => {
 
 
 // Function to create a new book
-const createBook = async (barcode, condition, title, author, genre) => {
+const createBook = async (barcode, condition, title, author, genre, shelter_id) => {
     const client = await pool.connect();
     try {
         const result = await client.query(
-            'INSERT INTO books (barcode, condition, title, author, genre) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [barcode, condition, title, author, genre]
+            'INSERT INTO books (barcode, condition, title, author, genre, shelter_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [barcode, condition, title, author, genre, shelter_id]
         );
         return result.rows[0];
     } catch (error) {
@@ -156,8 +156,8 @@ const createBook = async (barcode, condition, title, author, genre) => {
 // Endpoint to create a new book
 app.post('/api/books', async (req, res) => {
     try {
-        const { isbn: barcode, condition, title, author, genre} = req.body;
-        const book = await createBook(barcode, condition, title, author, genre);
+        const { isbn: barcode, condition, title, author, genre, shelter_id} = req.body;
+        const book = await createBook(barcode, condition, title, author, genre, shelter_id);
         res.status(201).json(book);
     } catch (error) {
         console.error(error);
