@@ -39,7 +39,7 @@ select, button {
   font-size: 1em;
 }
 
-button {
+.add-book-button {
   background-color: #6b8e23;
   color: white;
   border: none;
@@ -48,7 +48,7 @@ button {
   max-width: fit-content;
 }
 
-button:hover {
+.add-book-button:hover {
   background-color: #556b2f;
 }
 
@@ -68,8 +68,8 @@ h2 {
   text-align: center;
 }
 
-.map-container {
-  width: 100%;
+.map-container-add-book {
+  max-width: 100%;
   height: 400px;
 }
 

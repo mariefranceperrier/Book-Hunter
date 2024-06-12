@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
-import { useLocation } from 'react-router-dom';
+import { APIProvider, Map, Marker, useMap, InfoWindow } from '@vis.gl/react-google-maps';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './AllShelters.css';
 import { useMapCenter } from '../../MapCenterContext';
 
-const PoiMarkers = ({ pois }) => {
+const PoiMarkers = ({ pois, onMarkerHover, onMarkerClick }) => {
   const map = useMap();
 
-  const handleClick = (ev) => {
+  const handleMouseOver = (poi) => {
     if (!map) return;
-    if (!ev.latLng) return;
-    console.log('marker clicked:', ev.latLng.toString());
-    map.panTo(ev.latLng);
+    onMarkerHover(poi);
   };
 
   return (
@@ -24,7 +22,8 @@ const PoiMarkers = ({ pois }) => {
           position={poi.location}
           title={poi.key}
           clickable={true}
-          onClick={handleClick}
+          onMouseOver={() => handleMouseOver(poi)}
+          onClick={() => onMarkerClick(poi)}
         />
       ))}
     </>
@@ -39,16 +38,21 @@ PoiMarkers.propTypes = {
       lng: PropTypes.number.isRequired,
     }).isRequired,
   })).isRequired,
+  onMarkerHover: PropTypes.func.isRequired,
+  onMarkerClick: PropTypes.func.isRequired,
 };
 
 const AllShelters = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { mapCenter, setMapCenter } = useMapCenter();
   const [shelters, setShelters] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [loading, setLoading] = useState(true);
   const [mapKey, setMapKey] = useState(1);
+  const [hoveredShelter, setHoveredShelter] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +60,16 @@ const AllShelters = () => {
       try {
         const response = await axios.get('/api/shelters');
         if (response.status === 200) {
-          setShelters(response.data);
+          const sheltersData = response.data;
+
+          // Fetch the number of available books for each shelter
+          const updatedSheltersData = await Promise.all(sheltersData.map(async (shelter) => {
+            const booksResponse = await axios.get(`/api/shelters/${shelter.id}/books`);
+            const availableBooks = booksResponse.data.filter(book => book.is_available).length;
+            return { ...shelter, available_books: availableBooks };
+          }));
+
+          setShelters(updatedSheltersData);
         } else {
           console.error('Failed to fetch shelters');
         }
@@ -77,6 +90,7 @@ const AllShelters = () => {
             lat: parseFloat(shelter.latitude),
             lng: parseFloat(shelter.longitude),
           },
+          ...shelter
         };
       }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
       setLocations(formattedData);
@@ -155,6 +169,7 @@ const AllShelters = () => {
             lat: parseFloat(shelter.latitude),
             lng: parseFloat(shelter.longitude),
           },
+          ...shelter
         };
       }).filter(shelter => !isNaN(shelter.location.lat) && !isNaN(shelter.location.lng));
       setLocations(formattedData);
@@ -164,6 +179,26 @@ const AllShelters = () => {
       setLoading(false);
     }
   };
+
+  const handleMarkerClick = (shelter) => {
+    navigate(`/shelter/${shelter.id}`, { state: { shelter } });
+  };
+
+  const handleInfoWindowClose = () => {
+    setHoveredShelter(null);
+  };
+
+  const handleMapLoad = (map) => {
+    mapRef.current = map;
+    setMapInstance(map);
+  };
+
+  useEffect(() => {
+    if (mapInstance && mapCenter) {
+      mapInstance.setCenter(mapCenter);
+      mapInstance.setZoom(15);
+    }
+  }, [mapInstance, mapCenter]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -183,21 +218,41 @@ const AllShelters = () => {
           onChange={handleCityChange}
           onKeyPress={handleKeyPress}
         />
-        <button onClick={() => fetchLocations(selectedCity)}>Search</button>
+        <button className="search-container-button" onClick={() => fetchLocations(selectedCity)}>Search</button>
       </div>
       <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <Map
           key={mapKey}
-          className="map-container"
+          className="map-container-all"
           defaultZoom={13}
           defaultCenter={mapCenter}
-          onLoad={mapInstance => {
-            mapRef.current = mapInstance;
-          }}
+          onLoad={handleMapLoad}
           scrollwheel={true}
           disableDefaultUI={true}
         >
-          <PoiMarkers pois={locations} />
+          <PoiMarkers pois={locations} onMarkerHover={setHoveredShelter} onMarkerClick={handleMarkerClick} />
+          {hoveredShelter && (
+            <InfoWindow
+            position={{
+              lat: hoveredShelter.location.lat + 0.0005,
+              lng: hoveredShelter.location.lng
+            }}
+            onCloseClick={handleInfoWindowClose}
+            headerDisabled
+          >
+            <div className="info-window">
+              <button className="close-button-info" onClick={handleInfoWindowClose}>X</button>
+              <p>{hoveredShelter.civic_number} {hoveredShelter.street_name}</p>
+              <p>Available Books: {hoveredShelter.available_books}</p>
+              {hoveredShelter.picture && (
+                <img
+                  src={`data:image/jpeg;base64,${hoveredShelter.picture}`}
+                  alt="Shelter"
+                />
+              )}
+            </div>
+          </InfoWindow>
+          )}
         </Map>
       </APIProvider>
 
