@@ -123,7 +123,7 @@ const AddShelter = () => {
                 </div>
                 {error && <p className="error">{error}</p>}
                 <button className="add-shelter-button" type="submit">Add Shelter</button>
-                <img src="/ShelterImg.jpeg" alt="Image of a book shelter"/>
+                <img src="/ShelterImg.jpeg" alt="Book shelter"/>
                 
                 {/* <video width="100%" height="auto" controls>
                 <source src="/HomePageAnimation.mov" type="video/quicktime" />
