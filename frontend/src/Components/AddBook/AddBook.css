@@ -83,6 +83,11 @@ h2 {
   margin-top: 10px;
 }
 
+div.gm-style-iw-chr {
+  height: 15px;
+}
 
-
-
+div.gm-style-iw-d {
+  height: 110px;
+  margin-bottom: 0px;
+}

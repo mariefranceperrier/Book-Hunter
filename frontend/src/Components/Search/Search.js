@@ -48,7 +48,7 @@ const Search = () => {
   return (
     <main className="search">
       <h1>CATCH ME IF YOU CAN</h1>
-      <h2>Hunt a book by typing at least one detail below: </h2>
+      <h3>Hunt a book by typing at least one detail below: </h3>
       <form onSubmit={handleSubmit}>
         <input type="text" name="title" placeholder="Title" />
         <input type="text" name="author" placeholder="Author" />

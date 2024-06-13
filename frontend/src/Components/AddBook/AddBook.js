@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Map, Marker, APIProvider } from '@vis.gl/react-google-maps';
+import { Map, Marker, InfoWindow, APIProvider } from '@vis.gl/react-google-maps';
 import './AddBook.css';
 
 const AddBook = () => {
@@ -10,6 +10,7 @@ const AddBook = () => {
   const [success, setSuccess] = useState(false);
   const [shelters, setShelters] = useState([]);
   const [selectedShelter, setSelectedShelter] = useState(null);
+  const [hoveredShelter, setHoveredShelter] = useState(null);
   const [mapCenter, setMapCenter] = useState({ lat: 45.4215, lng: -75.6910 });
   const navigate = useNavigate();
   const mapRef = useRef(null);
@@ -113,6 +114,15 @@ const AddBook = () => {
 
   const handleMarkerClick = (shelter) => {
     setSelectedShelter(shelter);
+    setHoveredShelter(null); 
+  };
+
+  const handleMarkerHover = (shelter) => {
+    setHoveredShelter(shelter);
+  };
+
+  const handleInfoWindowClose = () => {
+    setHoveredShelter(null);
   };
 
   const formatShelters = (shelters) => {
@@ -179,12 +189,32 @@ const AddBook = () => {
                   key={shelter.key}
                   position={shelter.location}
                   onClick={() => handleMarkerClick(shelter)}
+                  onMouseOver={() => handleMarkerHover(shelter)}
                 />
               ))}
+              {hoveredShelter && (
+                <InfoWindow 
+                  position={{
+                    lat: hoveredShelter.location.lat + 0.0005,
+                    lng: hoveredShelter.location.lng
+                  }}
+                  onCloseClick={handleInfoWindowClose}
+                >
+                  <div className="custom-info-window">
+                    <p>{hoveredShelter.civic_number} {hoveredShelter.street_name}, {hoveredShelter.city}</p>
+                    <button
+                      className="info-window-button"
+                      onClick={() => handleMarkerClick(hoveredShelter)}
+                    >
+                      Select Shelter
+                    </button>
+                  </div>
+                </InfoWindow>
+              )}
             </Map>
           </APIProvider>
           {selectedShelter && (
-            <p>Selected Shelter: {selectedShelter.street_name}, {selectedShelter.city}</p>
+            <p>Selected Shelter: {selectedShelter.civic_number} {selectedShelter.street_name}, {selectedShelter.city}</p>
           )}
         </div>
         <button className="add-book-button" type="submit">Add Book</button>

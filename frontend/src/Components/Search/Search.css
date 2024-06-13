@@ -6,13 +6,12 @@
   background-size: cover;
   background-position: center; 
   background-repeat: no-repeat; 
-  height: 87vh; 
-  padding: 20px;
+  height: 100vh;
   box-sizing: border-box;
 }
 
 .search h1,
-.search h2,
+.search h3,
 .search form {
   background: rgba(255, 255, 255, 0.8); 
   padding: 20px;  
@@ -28,9 +27,9 @@
   margin-bottom: 10px;
 }
 
-.search h2 {
+.search h3 {
   color: #6b8e23;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin-bottom: 10px;
 }
 
@@ -41,6 +40,7 @@
   align-items: center;
   width: 100%;
   max-width: 500px;
+  margin-bottom: 60px;
 }
 
 .search input {
