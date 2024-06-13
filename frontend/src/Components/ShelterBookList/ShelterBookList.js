@@ -81,7 +81,7 @@ const ShelterBookList = () => {
         {books.map((book, index) => (
           <Link to={`/books/${book.id}`} key={index} className="book-link">
             <div className="book">
-              <h2>{book.title}</h2>
+              <h3>{book.title}</h3>
               <img src={book.imageUrl} alt={book.title} />
               <p><strong>Author:</strong><span className="data"> {book.author}</span></p>
               <p><strong>Genre:</strong><span className="data"> {book.genre}</span></p>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+import { APIProvider, Map, Marker, InfoWindow } from '@vis.gl/react-google-maps';
 import './SearchResults.css';
 
 const SearchResults = () => {
   const location = useLocation();
   const { title, author, genre, city, results } = location.state;
   const navigate = useNavigate();
+  const [hoveredShelter, setHoveredShelter] = useState(null);
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
 
   useEffect(() => {
@@ -37,6 +38,10 @@ const SearchResults = () => {
 
   const formattedResults = formatResults(results);
 
+  const handleInfoWindowClose = () => {
+  setHoveredShelter(null);
+  };
+
   return (
     <main className="search-results">
       <h1>Search Results</h1>
@@ -61,9 +66,29 @@ const SearchResults = () => {
               <Marker
                 key={result.key}
                 position={{ lat: result.location.lat, lng: result.location.lng }}
+                onMouseOver={() => setHoveredShelter(result)}
                 onClick={() => handleViewShelter(result)}
               />
             ))}
+            {hoveredShelter && (
+              <InfoWindow
+                position={{
+                  lat: hoveredShelter.location.lat + 0.0005,
+                  lng: hoveredShelter.location.lng
+                }}
+                onCloseClick={handleInfoWindowClose}
+              >
+                <div className="search-results-info-window">
+                  <span>{hoveredShelter.civic_number} {hoveredShelter.street_name}, {hoveredShelter.city}</span>
+                  <button
+                    className="info-window-button"
+                    onClick={() => handleViewShelter(hoveredShelter)}
+                  >
+                    View Content
+                  </button>
+                </div>
+              </InfoWindow>
+            )}
           </Map>
         </APIProvider>
       </div>

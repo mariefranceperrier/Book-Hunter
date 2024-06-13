@@ -70,7 +70,7 @@ const Book = () => {
         {book.is_available ? 'Gotcha!' : 'Checked Out'}
       </button>
       <div className="book-info">
-        <h2>{book.title}</h2>        
+        <h3>{book.title}</h3>        
         <img src={book.imageUrl} alt={book.title} />
         <p><strong>Author:</strong><span className="data"> {book.author}</span></p>
         <p><strong>Genre:</strong><span className="data"> {book.genre}</span></p>

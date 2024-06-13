@@ -3,10 +3,10 @@
   flex-direction: column;
   align-items: center;
   background-color: rgb(245, 245, 209);
-  padding: 20px;
+  padding-top: 50px;
   border-radius: 10px;
-  max-width: 600px;
-  margin: 40px auto;
+  max-width: 500px;
+  margin: 100px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   font-family: 'Merriweather', sans-serif;
 }
@@ -48,7 +48,8 @@
   margin-bottom: 20px;
 }
 
-.book-info h2 {
-  margin-bottom: 10px;
+.book-info h3 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
 }
 
