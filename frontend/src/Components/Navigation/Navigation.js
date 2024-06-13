@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navigation.css';
-import logo from '../Navigation/assets/bookhunter.png';
+// import logo from '../Navigation/assets/bookhunter.png';
+import logo from '../Navigation/assets/bookhunter2.png';
 
 const Navigation = () => {
   return (

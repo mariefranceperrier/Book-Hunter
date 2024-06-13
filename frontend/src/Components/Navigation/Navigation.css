@@ -1,6 +1,7 @@
 .nav-bar {
   width: 100%;
-  background-color: #002e1e;
+  /* background-color: #002e1e; */
+  background-color: #6b8e23;
   padding: 5px 5px;
   display: flex;
   align-items: center;
@@ -21,7 +22,7 @@
 }
 
 .logo {
-  width: 60px;
+  width: 80px;
   height: auto;
 }
 
