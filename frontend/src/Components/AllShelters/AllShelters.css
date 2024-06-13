@@ -11,7 +11,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 30px;
-  margin-top: 20px;
+  margin-top: 35px;
 }
 
 .search-container-button input {
@@ -46,8 +46,12 @@
   flex-direction: column;
   align-items: flex-start;
   position: relative;
+  }
+  
+div.gm-style-iw.gm-style-iw-c {
+  width: 150px;
 }
-
+  
 .info-window p {
   margin: 0;
   padding: 2px 0;

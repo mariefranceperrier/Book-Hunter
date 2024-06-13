@@ -3,6 +3,9 @@
   font-size: 0.875em;
   margin-top: 0.5em;
 }
+ h2 {
+  margin-top: 90px;
+}
 
 form {
   display: flex;
