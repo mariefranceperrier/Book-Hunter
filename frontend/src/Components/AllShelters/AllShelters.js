@@ -241,7 +241,7 @@ const AllShelters = () => {
             headerDisabled
           >
             <div className="info-window">
-              <button className="close-button-info" onClick={handleInfoWindowClose}>X</button>
+              <button className="close-button-info" onClick={handleInfoWindowClose}>×</button>
               <p>{hoveredShelter.civic_number} {hoveredShelter.street_name}</p>
               <p>Available Books: {hoveredShelter.available_books}</p>
               {hoveredShelter.picture && (
