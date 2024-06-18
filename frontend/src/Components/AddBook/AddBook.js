@@ -147,7 +147,7 @@ const AddBook = () => {
       <h2>Thank you for your donation!</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="isbn">ISBN Number:</label>
+          <label htmlFor="isbn">ISBN:</label>
           <input
             type="text"
             id="isbn"
