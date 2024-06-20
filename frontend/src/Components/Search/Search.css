@@ -67,23 +67,23 @@
   background-color: #556b2f;
 }
 
-.bookmark {
+.our-mission {
   position: fixed;
   bottom: 50px;
-  right: 55px;
+  right: 45px;
   transform: rotate(180deg);
   transform-origin: right;
   writing-mode: vertical-rl;
   background-color: rgb(86, 120, 222);
-  color: white;
+  color: white; 
   border: none; 
-  padding: 20px 10px 20px 0px;
+  padding: 20px 10px 20px 10px;
   cursor: pointer;
   z-index: 1000;
   border-radius: 5px;
   font-size: 1.3rem;
 }
 
-.bookmark:hover {
+.our-mission:hover {
   background-color: rgb(56, 90, 202);
 }

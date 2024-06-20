@@ -56,7 +56,7 @@ const Search = () => {
         <input type="text" name="city" placeholder="City" />
         <button className="search-button" type="submit">Search</button>
       </form>
-      <button className="bookmark" onClick={handleBookmarkClick}>OUR MISSION</button>
+      <span className="our-mission" onClick={handleBookmarkClick}>OUR MISSION</span>
       <Modal className='modal' show={showModal} handleClose={handleCloseModal}>
         <h1>OUR MISSION</h1>
         <p>Book Hunter is a community-driven platform dedicated to connecting book lovers and promoting literacy.</p>
